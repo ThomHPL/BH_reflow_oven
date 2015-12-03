@@ -1,0 +1,96 @@
+
+#include "menu.h"
+
+// MENU TEXTS DEFINITION
+
+// main menu
+const char ST_WELCOME_TXT[]				PROGMEM = "WELCOME< ";
+const char ST_TEMP_PTS_TXT[]			PROGMEM = "T' POINTS";
+const char ST_PROFILES_TXT[]			PROGMEM = "PROFILE<>";
+	const char ST_PROFILES_SAVE_TXT[]		PROGMEM = "SAVE<>";
+	const char ST_PROFILES_LOAD_TXT[]		PROGMEM = "LOAD<>";
+const char ST_RUN_TXT[]					PROGMEM = "RUN";
+
+// manual menu
+const char ST_MANUAL_TXT[]				PROGMEM = "MANUAL >";
+const char ST_MANUAL_TEMP_TXT[]			PROGMEM = "TEMP";
+const char ST_MANUAL_CMD_TXT[]			PROGMEM = "COMMAND >";
+	const char ST_MANUAL_SET_CMD_TXT[]			PROGMEM = "DUTY CYCLE< ";
+
+
+// MENU_STATE'S DEFINITION
+const MENU_STATE Menu_State[] PROGMEM = {
+//  STATE                       TEXT						FUNCTION
+
+	// MENUS
+	
+	// main menu
+	{ST_WELCOME_ID,				ST_WELCOME_TXT,				st_welcome},
+	{ST_TEMP_PTS_ID,			ST_TEMP_PTS_TXT,			st_temp_pts},
+	{ST_PROFILES_ID,			ST_PROFILES_TXT,			st_profiles},
+		{ST_PROFILES_SAVE_ID,		ST_PROFILES_SAVE_TXT,		st_profiles_save},
+		{ST_PROFILES_LOAD_ID,		ST_PROFILES_LOAD_TXT,		st_profiles_load},
+	{ST_RUN_ID,					ST_RUN_TXT,					st_run},
+	
+	// manual menu
+	{ST_MANUAL_ID,				ST_MANUAL_TXT,				st_manual},
+	{ST_MANUAL_TEMP_ID,			ST_MANUAL_TEMP_TXT,			st_manual_temp},
+	{ST_MANUAL_CMD_ID,			ST_MANUAL_CMD_TXT,			st_manual_cmd},
+		{ST_MANUAL_SET_CMD_ID,			ST_MANUAL_SET_CMD_TXT,			st_manual_set_cmd},		
+
+	{0,							NULL,						NULL},
+};
+
+// MENU_NEXTSTATE'S DEFINITION
+const MENU_NEXTSTATE Menu_Nextstate[] PROGMEM = {
+//  STATE                       INPUT						NEXT STATE
+
+	// MENUS
+	
+	// main menu
+	{ST_WELCOME_ID,				KEY_NULL,					ST_WELCOME_ID},
+	{ST_WELCOME_ID,				KEY_UP,						ST_RUN_ID},
+	{ST_WELCOME_ID,				KEY_DOWN,					ST_TEMP_PTS_ID},
+	{ST_WELCOME_ID,				KEY_LEFT,					ST_MANUAL_ID},
+	
+	{ST_TEMP_PTS_ID,			KEY_NULL,					ST_TEMP_PTS_ID},
+	{ST_TEMP_PTS_ID,			KEY_UP,						ST_WELCOME_ID},
+	{ST_TEMP_PTS_ID,			KEY_DOWN,					ST_PROFILES_ID},
+	//{ST_TEMP_PTS_ID,			KEY_LEFT,					ST_},
+	//{ST_TEMP_PTS_ID,			KEY_RIGHT,					ST_BLINK_PERIOD_ID},
+		
+	{ST_PROFILES_ID,			KEY_NULL,					ST_PROFILES_ID},
+	{ST_PROFILES_ID,			KEY_UP,						ST_TEMP_PTS_ID},
+	{ST_PROFILES_ID,			KEY_DOWN,					ST_RUN_ID},
+	{ST_PROFILES_ID,			KEY_LEFT,					ST_PROFILES_LOAD_ID},
+	{ST_PROFILES_ID,			KEY_RIGHT,					ST_PROFILES_SAVE_ID},
+		{ST_PROFILES_SAVE_ID,		KEY_NULL,					ST_PROFILES_SAVE_ID},
+		{ST_PROFILES_SAVE_ID,		KEY_LEFT,					ST_PROFILES_ID},
+		{ST_PROFILES_SAVE_ID,		KEY_RIGHT,					ST_PROFILES_LOAD_ID},
+			{ST_PROFILES_LOAD_ID,		KEY_NULL,					ST_PROFILES_LOAD_ID},
+			{ST_PROFILES_LOAD_ID,		KEY_LEFT,					ST_PROFILES_SAVE_ID},
+			{ST_PROFILES_LOAD_ID,		KEY_RIGHT,					ST_PROFILES_ID},
+	
+	{ST_RUN_ID,					KEY_NULL,					ST_RUN_ID},
+	{ST_RUN_ID,					KEY_UP,						ST_PROFILES_ID},
+	{ST_RUN_ID,					KEY_DOWN,					ST_WELCOME_ID},
+		
+	// manual menu
+	{ST_MANUAL_ID,				KEY_NULL,					ST_MANUAL_ID},
+	{ST_MANUAL_ID,				KEY_UP,						ST_MANUAL_CMD_ID},
+	{ST_MANUAL_ID,				KEY_DOWN,					ST_MANUAL_TEMP_ID},
+	{ST_MANUAL_ID,				KEY_RIGHT,					ST_WELCOME_ID},
+	
+	{ST_MANUAL_TEMP_ID,			KEY_NULL,					ST_MANUAL_TEMP_ID},
+	{ST_MANUAL_TEMP_ID,			KEY_UP,						ST_MANUAL_ID},
+	{ST_MANUAL_TEMP_ID,			KEY_DOWN,					ST_MANUAL_CMD_ID},
+	
+	{ST_MANUAL_CMD_ID,			KEY_NULL,					ST_MANUAL_CMD_ID},
+	{ST_MANUAL_CMD_ID,			KEY_UP,						ST_MANUAL_TEMP_ID},
+	{ST_MANUAL_CMD_ID,			KEY_DOWN,					ST_MANUAL_ID},
+	{ST_MANUAL_CMD_ID,			KEY_RIGHT,					ST_MANUAL_SET_CMD_ID},
+		{ST_MANUAL_SET_CMD_ID,			KEY_NULL,					ST_MANUAL_SET_CMD_ID},
+		{ST_MANUAL_SET_CMD_ID,			KEY_LEFT,					ST_MANUAL_CMD_ID},
+			
+	{0,							0,							0},		
+};
