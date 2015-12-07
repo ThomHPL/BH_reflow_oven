@@ -2,7 +2,7 @@
  * main.c
  *
  * Created: 30/10/2015 14:29:45
- *  Author: Thomas
+ *  Author: Thomas & Antoine
  */ 
 
 
