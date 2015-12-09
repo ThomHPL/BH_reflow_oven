@@ -45,7 +45,9 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../button.c \
+../EEPROM.c \
 ../hardware.c \
+../I2C.c \
 ../lcd.c \
 ../main.c \
 ../MAX.c \
@@ -64,7 +66,9 @@ ASM_SRCS +=
 
 OBJS +=  \
 button.o \
+EEPROM.o \
 hardware.o \
+I2C.o \
 lcd.o \
 main.o \
 MAX.o \
@@ -77,7 +81,9 @@ USART.o
 
 OBJS_AS_ARGS +=  \
 button.o \
+EEPROM.o \
 hardware.o \
+I2C.o \
 lcd.o \
 main.o \
 MAX.o \
@@ -90,7 +96,9 @@ USART.o
 
 C_DEPS +=  \
 button.d \
+EEPROM.d \
 hardware.d \
+I2C.d \
 lcd.d \
 main.d \
 MAX.d \
@@ -103,7 +111,9 @@ USART.d
 
 C_DEPS_AS_ARGS +=  \
 button.d \
+EEPROM.d \
 hardware.d \
+I2C.d \
 lcd.d \
 main.d \
 MAX.d \
@@ -141,6 +151,10 @@ ADDITIONAL_DEPENDENCIES:= $(HEX_FLASH_FILE_PATH) $(LSS_FILE_PATH) $(HEX_EEPROM_F
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR/GNU C Compiler
+
+
+
+
 
 
 

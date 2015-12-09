@@ -39,11 +39,8 @@ void PWM_setDutyCycle(unsigned char DC)
 void PWM_enable(void)
 {
 	TCCR0B |= (1<<CS02)|(1<<CS00);
-	//RS232_sendString("\r\nCOMMAND Enabled\r\n");
-	RS232_println("COMMAND enabled");
 	char msg[16];
 	sprintf(msg,"DC : %d \r\n",PWM_DC);
-	RS232_print(msg);
 }
 
 void PWM_disable(void)
