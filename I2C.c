@@ -18,8 +18,6 @@ void (*I2C_function)(unsigned char statusCode);
 void I2C_init(int sclKHz)
 {
 	TWBR = ((CPU_F/1000)-(sclKHz))/(2*sclKHz*PRESCALER);
-	RS232_sendByte(TWBR);
-	RS232_sendByte(0x55);
 	TWCR |= (1<<TWEA)|(1<<TWEN)|(1<<TWIE);
 	TWSR &= ~((1<<TWPS1)|(1<<TWPS0));
 }
