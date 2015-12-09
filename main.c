@@ -18,6 +18,8 @@
 #include "MAX.h"
 #include "SPI.h"
 #include "timers.h"
+#include "I2C.h"
+#include "EEPROM.h"
 
 char CBID_TglLed = 0;
 char CBID_delay = 0;
@@ -36,16 +38,22 @@ unsigned char PWM_DC = 127;
 int main(void)
 {	
 	lcd_init(LCD_DISP_ON);
+	sei();
 		
 	OS_init();
+
+	RS232_init(9600);	
+	I2C_init(100);
+		
+	EEPROM_writeByte(0x55,EEPROM_ADDR,0);
 	
-	sei();
+
 	
 	statusLed_init();
 
 	KEYBOARD_init();
 	
-	RS232_init(9600);
+
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");

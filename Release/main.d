@@ -15,7 +15,8 @@ main.d main.o: .././main.c .././main.h \
  d:\program\ files\atmel\avr\ studio\ 5.0\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/pgmspace.h \
  d:\program\ files\atmel\avr\ studio\ 5.0\avr\ toolchain\bin\../lib/gcc/avr/4.5.1/include/stddef.h \
  .././button.h .././hardware.h .././lcd.h .././OS.h .././menu.h \
- .././USART.h .././MAX.h .././SPI.h .././timers.h
+ .././USART.h .././MAX.h .././SPI.h .././timers.h .././I2C.h \
+ .././EEPROM.h
 
 .././main.h:
 
@@ -66,3 +67,7 @@ d:\program\ files\atmel\avr\ studio\ 5.0\avr\ toolchain\bin\../lib/gcc/avr/4.5.1
 .././SPI.h:
 
 .././timers.h:
+
+.././I2C.h:
+
+.././EEPROM.h:

@@ -17,9 +17,9 @@ void read_key(void);
 void KEYBOARD_init(void)
 {
     // Init port pins
-	cbiBF(DDRC,PD2);
-	cbiBF(DDRC,PD3);
-	cbiBF(DDRC,PD4);
+	cbiBF(DDRD,PD2);
+	cbiBF(DDRD,PD3);
+	cbiBF(DDRD,PD4);
 	cbiBF(DDRB,PB6);
 	cbiBF(DDRB,PB7);
 

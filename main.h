@@ -15,6 +15,8 @@
 #define FALSE	0
 #define NULL	0
 
+#define EEPROM_ADDR	0b1010000
+
 extern unsigned char PWM_DC;
 
 // Gestion registre par bit unique

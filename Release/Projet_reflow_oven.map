@@ -34,9 +34,12 @@ TIMER_CB_TICK       0x14              OS.o
 SPI_statusCode      0x1               I2C.o
 I2C_function        0x2               I2C.o
 OS_CURRENT_STATE    0x1               OS.o
+pointer             0x2               EEPROM.o
+buffer              0x2               EEPROM.o
 TIMER_CB_TIME       0x14              OS.o
+pageWidth           0x2               EEPROM.o
 TIMER_CB_FUNC       0x14              OS.o
-device              0x1               I2C.o
+SLA                 0x1               I2C.o
 
 Memory Configuration
 
@@ -159,7 +162,7 @@ LOAD d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1568
+.text           0x00000000     0x16f6
  *(.vectors)
  .vectors       0x00000000       0x34 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm88.o
                 0x00000000                __vector_default
@@ -256,119 +259,126 @@ LOAD d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.
                 0x0000020a                __vector_5
                 0x00000270                __vector_3
                 0x000002d6                KEYBOARD_getKey
- .text          0x000002e0        0x0 EEPROM.o
- .text          0x000002e0       0x1e hardware.o
-                0x000002e0                statusLed_init
-                0x000002e6                hardware_init
-                0x000002f0                statusLedOn
-                0x000002f4                statusLedOff
-                0x000002f8                statusLedToggle
- .text          0x000002fe       0xce I2C.o
-                0x000002fe                I2C_init
-                0x00000348                I2C_setAddress
-                0x0000034e                I2C_setFunction
-                0x00000358                I2C_start
-                0x00000364                I2C_stop
-                0x00000376                __vector_24
- .text          0x000003cc      0x15e lcd.o
-                0x00000460                lcd_command
-                0x00000470                lcd_gotoxy
-                0x0000047e                lcd_clrscr
-                0x00000484                lcd_putc
-                0x000004a8                lcd_puts
-                0x000004be                lcd_puts_p
-                0x000004d8                lcd_init
- .text          0x0000052a      0x416 main.o
-                0x0000052a                main
-                0x00000584                st_welcome
-                0x00000686                st_temp_pts
-                0x0000069e                st_profiles
-                0x000006b6                st_profiles_save
-                0x000006ce                st_profiles_load
-                0x000006e6                st_run
-                0x000006fe                st_manual
-                0x00000716                st_manual_temp
-                0x0000072e                st_manual_cmd
-                0x000007a4                st_manual_set_cmd
- .text          0x00000940       0x28 MAX.o
-                0x00000940                MAX_init
-                0x00000946                MAX_start
-                0x0000094a                MAX_getTemp
- .text          0x00000968        0x0 menu.o
- .text          0x00000968      0x29c OS.o
-                0x00000968                OS_init
-                0x0000099c                OS_stateMachine
-                0x000009d8                OS_start
-                0x00000b00                OS_addTimerCallback
-                0x00000b54                OS_removeTimerCallback
-                0x00000b7c                OS_updateCallbackTime
-                0x00000b8e                __vector_7
- .text          0x00000c04      0x16a SPI.o
-                0x00000c04                SPI_init
-                0x00000c34                SPI_start
-                0x00000c52                SPI_getFrame
-                0x00000c64                __vector_17
- .text          0x00000d6e      0x120 timers.o
-                0x00000d6e                CB_TIMER_Init_1ms
-                0x00000d94                PWM_Init
-                0x00000da0                PWM_setDutyCycle
-                0x00000da4                PWM_enable
-                0x00000e0e                PWM_disable
- .text          0x00000e8e       0xbe USART.o
-                0x00000e8e                RS232_init
-                0x00000eba                RS232_sendByte
-                0x00000ec8                RS232_print
-                0x00000eee                RS232_println
-                0x00000f1a                RS232_sendBuffer
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
- .text          0x00000f4c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
-                0x00000f4c                . = ALIGN (0x2)
+ .text          0x000002e0      0x120 EEPROM.o
+                0x000002e0                writePage
+                0x00000346                writeByte
+                0x000003a4                EEPROM_writeByte
+                0x000003da                EEPROM_writePage
+ .text          0x00000400       0x1e hardware.o
+                0x00000400                statusLed_init
+                0x00000406                hardware_init
+                0x00000410                statusLedOn
+                0x00000414                statusLedOff
+                0x00000418                statusLedToggle
+ .text          0x0000041e      0x12c I2C.o
+                0x0000041e                I2C_init
+                0x00000476                I2C_setAddress
+                0x0000047c                I2C_setFunction
+                0x00000486                I2C_start
+                0x00000492                I2C_stop
+                0x000004a4                I2C_send
+                0x000004ba                I2C_sendSLAW
+                0x000004d6                I2C_sendSLAR
+                0x000004f4                __vector_24
+ .text          0x0000054a      0x15e lcd.o
+                0x000005de                lcd_command
+                0x000005ee                lcd_gotoxy
+                0x000005fc                lcd_clrscr
+                0x00000602                lcd_putc
+                0x00000626                lcd_puts
+                0x0000063c                lcd_puts_p
+                0x00000656                lcd_init
+ .text          0x000006a8      0x426 main.o
+                0x000006a8                main
+                0x00000712                st_welcome
+                0x00000814                st_temp_pts
+                0x0000082c                st_profiles
+                0x00000844                st_profiles_save
+                0x0000085c                st_profiles_load
+                0x00000874                st_run
+                0x0000088c                st_manual
+                0x000008a4                st_manual_temp
+                0x000008bc                st_manual_cmd
+                0x00000932                st_manual_set_cmd
+ .text          0x00000ace       0x28 MAX.o
+                0x00000ace                MAX_init
+                0x00000ad4                MAX_start
+                0x00000ad8                MAX_getTemp
+ .text          0x00000af6        0x0 menu.o
+ .text          0x00000af6      0x29c OS.o
+                0x00000af6                OS_init
+                0x00000b2a                OS_stateMachine
+                0x00000b66                OS_start
+                0x00000c8e                OS_addTimerCallback
+                0x00000ce2                OS_removeTimerCallback
+                0x00000d0a                OS_updateCallbackTime
+                0x00000d1c                __vector_7
+ .text          0x00000d92      0x16a SPI.o
+                0x00000d92                SPI_init
+                0x00000dc2                SPI_start
+                0x00000de0                SPI_getFrame
+                0x00000df2                __vector_17
+ .text          0x00000efc      0x120 timers.o
+                0x00000efc                CB_TIMER_Init_1ms
+                0x00000f22                PWM_Init
+                0x00000f2e                PWM_setDutyCycle
+                0x00000f32                PWM_enable
+                0x00000f9c                PWM_disable
+ .text          0x0000101c       0xbe USART.o
+                0x0000101c                RS232_init
+                0x00001048                RS232_sendByte
+                0x00001056                RS232_print
+                0x0000107c                RS232_println
+                0x000010a8                RS232_sendBuffer
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
+ .text          0x000010da        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
+                0x000010da                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00000f4c       0x36 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
-                0x00000f4c                __divmodsi4
- .text.libgcc   0x00000f82        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
- .text.libgcc   0x00000f82        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
- .text.libgcc   0x00000f82        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
- .text.libgcc   0x00000f82       0x44 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
-                0x00000f82                __udivmodsi4
+ .text.libgcc   0x000010da       0x36 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
+                0x000010da                __divmodsi4
+ .text.libgcc   0x00001110        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .text.libgcc   0x00001110        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
+ .text.libgcc   0x00001110        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x00001110       0x44 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
+                0x00001110                __udivmodsi4
  .text.avr-libc
-                0x00000fc6       0x40 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
-                0x00000fc6                sprintf
+                0x00001154       0x40 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
+                0x00001154                sprintf
  .text.avr-libc
-                0x00001006      0x3b0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
-                0x00001006                vfprintf
+                0x00001194      0x3b0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
+                0x00001194                vfprintf
  .text.avr-libc
-                0x000013b6       0x16 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
-                0x000013b6                strnlen_P
+                0x00001544       0x16 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
+                0x00001544                strnlen_P
  .text.avr-libc
-                0x000013cc       0x16 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
-                0x000013cc                strnlen
+                0x0000155a       0x16 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
+                0x0000155a                strnlen
  .text.avr-libc
-                0x000013e2       0x58 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
-                0x000013e2                fputc
+                0x00001570       0x58 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
+                0x00001570                fputc
  .text.avr-libc
-                0x0000143a       0xbc d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
-                0x0000143a                __ultoa_invert
- .text.libgcc   0x000014f6       0x38 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
-                0x000014f6                __prologue_saves__
- .text.libgcc   0x0000152e       0x36 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
-                0x0000152e                __epilogue_restores__
-                0x00001564                . = ALIGN (0x2)
+                0x000015c8       0xbc d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
+                0x000015c8                __ultoa_invert
+ .text.libgcc   0x00001684       0x38 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
+                0x00001684                __prologue_saves__
+ .text.libgcc   0x000016bc       0x36 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
+                0x000016bc                __epilogue_restores__
+                0x000016f2                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001564        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
-                0x00001564                _exit
-                0x00001564                exit
+ .fini9         0x000016f2        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+                0x000016f2                _exit
+                0x000016f2                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -387,11 +397,11 @@ LOAD d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001564        0x4 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .fini0         0x000016f2        0x4 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001568                _etext = .
+                0x000016f6                _etext = .
 
-.data           0x00800100       0x6c load address 0x00001568
+.data           0x00800100       0x6c load address 0x000016f6
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm88.o
@@ -432,7 +442,7 @@ LOAD d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.
                 0x0080016c                _edata = .
                 0x0080016c                PROVIDE (__data_end, .)
 
-.bss            0x0080016c       0x58
+.bss            0x0080016c       0x62
                 0x0080016c                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x0080016c        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4/crtm88.o
@@ -440,59 +450,63 @@ LOAD d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.
                 0x0080016c                KEY
                 0x0080016d                CBID_ReadKey
                 0x0080016e                CBID_KEYDOWN_simulation
- .bss           0x0080016f        0x0 EEPROM.o
- .bss           0x0080016f        0x0 hardware.o
- .bss           0x0080016f        0x0 I2C.o
- .bss           0x0080016f        0x0 lcd.o
- .bss           0x0080016f        0xd main.o
-                0x0080016f                CBID_TglLed
-                0x00800170                CBID_delay
-                0x00800171                CBID_AcqSpi
-                0x00800172                CBID_RefreshLCD
-                0x00800173                pwmDCpourMille
- .bss           0x0080017c        0x0 MAX.o
- .bss           0x0080017c        0x0 menu.o
- .bss           0x0080017c        0x0 OS.o
- .bss           0x0080017c        0x7 SPI.o
-                0x0080017c                frame
-                0x00800180                count
-                0x00800181                temp
- .bss           0x00800183        0x0 timers.o
- .bss           0x00800183        0x0 USART.o
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
- .bss           0x00800183        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
+ .bss           0x0080016f        0x4 EEPROM.o
+ .bss           0x00800173        0x0 hardware.o
+ .bss           0x00800173        0x0 I2C.o
+ .bss           0x00800173        0x0 lcd.o
+ .bss           0x00800173        0xd main.o
+                0x00800173                CBID_TglLed
+                0x00800174                CBID_delay
+                0x00800175                CBID_AcqSpi
+                0x00800176                CBID_RefreshLCD
+                0x00800177                pwmDCpourMille
+ .bss           0x00800180        0x0 MAX.o
+ .bss           0x00800180        0x0 menu.o
+ .bss           0x00800180        0x0 OS.o
+ .bss           0x00800180        0x7 SPI.o
+                0x00800180                frame
+                0x00800184                count
+                0x00800185                temp
+ .bss           0x00800187        0x0 timers.o
+ .bss           0x00800187        0x0 USART.o
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_divmodsi4.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_exit.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_copy_data.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_clear_bss.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_udivmodsi4.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(sprintf.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(vfprintf_std.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen_P.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(strnlen.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(fputc.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr4\libc.a(ultoa_invert.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_prologue.o)
+ .bss           0x00800187        0x0 d:/program files/atmel/avr studio 5.0/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr4\libgcc.a(_epilogue.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800183        0x4 I2C.o
-                0x00800183                SPI_statusCode
-                0x00800184                I2C_function
-                0x00800186                device
- COMMON         0x00800187       0x3d OS.o
-                0x00800187                TIMER_CB_TICK
-                0x0080019b                OS_CURRENT_STATE
-                0x0080019c                TIMER_CB_TIME
-                0x008001b0                TIMER_CB_FUNC
-                0x008001c4                PROVIDE (__bss_end, .)
-                0x00001568                __data_load_start = LOADADDR (.data)
-                0x000015d4                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800187        0x6 EEPROM.o
+                0x00800187                pointer
+                0x00800189                buffer
+                0x0080018b                pageWidth
+ COMMON         0x0080018d        0x4 I2C.o
+                0x0080018d                SPI_statusCode
+                0x0080018e                I2C_function
+                0x00800190                SLA
+ COMMON         0x00800191       0x3d OS.o
+                0x00800191                TIMER_CB_TICK
+                0x008001a5                OS_CURRENT_STATE
+                0x008001a6                TIMER_CB_TIME
+                0x008001ba                TIMER_CB_FUNC
+                0x008001ce                PROVIDE (__bss_end, .)
+                0x000016f6                __data_load_start = LOADADDR (.data)
+                0x00001762                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001c4        0x0
-                0x008001c4                PROVIDE (__noinit_start, .)
+.noinit         0x008001ce        0x0
+                0x008001ce                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008001c4                PROVIDE (__noinit_end, .)
-                0x008001c4                _end = .
-                0x008001c4                PROVIDE (__heap_start, .)
+                0x008001ce                PROVIDE (__noinit_end, .)
+                0x008001ce                _end = .
+                0x008001ce                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
