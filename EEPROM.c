@@ -55,7 +55,10 @@ void writeByte(unsigned char statusCode)
 		if(index==2)
 			I2C_send((unsigned char)(pointer&0xFF));
 		else if (index == 3)
+		{
 			I2C_send(*buffer);
+			pointer +=1;
+		}			
 		else
 		{
 			I2C_stop();
@@ -88,7 +91,10 @@ void writePage(unsigned char statusCode)
 		if(index==2)
 			I2C_send((unsigned char)(pointer&0xFF));
 		else if (index < 35)
+		{
 			I2C_send(*buffer++);
+			pointer +=1;
+		}			
 		else
 		{
 			I2C_stop();

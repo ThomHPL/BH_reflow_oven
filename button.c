@@ -43,7 +43,7 @@ ISR(PCINT2_vect)
 	cli();
 	cbiBF(PCICR,PCIE2);
 	cbiBF(PCICR,PCIE0);  
-	CBID_ReadKey = OS_addTimerCallback(read_key,10);
+	CBID_ReadKey = OS_addTimerCallback(read_key,KEY_TMR);
 	sei();
 }
 ISR(PCINT0_vect)
@@ -51,7 +51,7 @@ ISR(PCINT0_vect)
 	cli();
 	cbiBF(PCICR,PCIE2); 
 	cbiBF(PCICR,PCIE0); 
-	CBID_ReadKey = OS_addTimerCallback(read_key,10);
+	CBID_ReadKey = OS_addTimerCallback(read_key,KEY_TMR);
 	sei();
 }
 

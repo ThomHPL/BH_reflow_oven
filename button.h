@@ -14,7 +14,6 @@
 
 // DEFINE
 
-
 #define PIND_MASK ((1<<PIND4)|(1<<PIND3)|(1<<PIND2))
 #define PINB_MASK ((1<<PINB6)|(1<<PINB7))
 #define KEY_UP_PIN		PB6
@@ -31,6 +30,10 @@
 #define KEY_ENTER   3
 #define KEY_DOWN    4
 #define KEY_LEFT    5
+
+// define timer for the input (ms)
+
+#define KEY_TMR		20
 
 
 // PROTOTYPE FONCTIONS EXTERNES
