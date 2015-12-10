@@ -15,7 +15,6 @@
 //CONTENU FONCTIONS EXTERNES
 void RS232_init(int baudrate)
 {
-// fréquence horloge = 8000000 hz, Si Baudrate = 9600 alors UBRR = 103
 	//double speed  U2X0 = 1  
 	UCSR0A |= (1<<U2X0);
 	

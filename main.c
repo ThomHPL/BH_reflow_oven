@@ -47,8 +47,6 @@ int main(void)
 		
 	EEPROM_writeByte(0x55,EEPROM_ADDR,0);
 	
-
-	
 	statusLed_init();
 
 	KEYBOARD_init();
