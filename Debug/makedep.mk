@@ -4,7 +4,11 @@
 
 button.c
 
+EEPROM.c
+
 hardware.c
+
+I2C.c
 
 lcd.c
 

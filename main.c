@@ -37,27 +37,31 @@ unsigned char PWM_DC = 127;
 // MAIN
 int main(void)
 {	
+	
 	lcd_init(LCD_DISP_ON);
-	sei();
-		
+	
 	OS_init();
 
 	RS232_init(9600);	
-	I2C_init(100);
-		
-	EEPROM_writeByte(0x55,EEPROM_ADDR,0);
 	
 	statusLed_init();
 
 	KEYBOARD_init();
 	
-
+	MAX_init();
+	
+	I2C_init(100);
+	
+	sei();
+	
+	unsigned char page[16] = {0xFF,0xFE,0xFD,0xFC};
+	EEPROM_writeByte(0x42,EEPROM_ADDR,0x0);
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");
 	RS232_print("\r\n\r\n\0");
 	
-	MAX_init();
+
 	PWM_Init(PWM_DC);
 	RS232_print("Start PWM \r\n");
 	

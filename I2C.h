@@ -52,7 +52,7 @@ void I2C_setAddress(unsigned char addr);
 /************************************************************************/
 /* Sets the function to do in interrupt		                            */
 /************************************************************************/
-void I2C_setFunction(void *func(unsigned char));
+void I2C_setFunction(void func(unsigned char));
 
 /************************************************************************/
 /* Sends a START condition on the bus                                   */
