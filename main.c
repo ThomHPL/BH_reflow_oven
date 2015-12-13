@@ -55,7 +55,8 @@ int main(void)
 	sei();
 	
 	unsigned char page[16] = {0xFF,0xFE,0xFD,0xFC};
-	EEPROM_writeByte(0x42,EEPROM_ADDR,0x0);
+	unsigned char byte = 0x18;
+	EEPROM_writeByte(&byte,EEPROM_ADDR,0x0);
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");

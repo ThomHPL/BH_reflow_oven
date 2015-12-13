@@ -15,12 +15,11 @@ void writeByte(unsigned char statusCode);
 void writePage(unsigned char statusCode);
 void erasePage(unsigned char statusCode);
 
-void EEPROM_writeByte(unsigned char byte,unsigned char deviceAddr,unsigned int byteAddr)
+void EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr)
 {
-	// BUG !!
 	pointer = byteAddr;
 	pageWidth = 1;
-	buffer = &byte;
+	buffer = data;
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(writePage);
 	I2C_start();
@@ -56,7 +55,7 @@ void EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned ch
 /************************************************************************/
 /* Function to write a byte												*/
 /* Will be executed at each I2C interrupt                               */
-/* TESTED KO															*/
+/* TESTED OK															*/
 /************************************************************************/
 void writeByte(unsigned char statusCode)
 {
