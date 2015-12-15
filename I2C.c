@@ -23,6 +23,16 @@ void I2C_init(int sclKHz)
 	TWBR = 4;	
 }
 
+void I2C_enableACK(void)
+{
+	TWCR |= (1<<TWEA);
+}
+
+void I2C_disableACK(void)
+{
+	TWCR &= ~(1<<TWEA);
+}
+
 void I2C_setAddress(unsigned char addr)
 {
 	SLA = addr;
@@ -49,6 +59,14 @@ void I2C_send(unsigned char data)
 	TWDR = data;
 	TWCR &= ~((1<<TWSTA)|(1<<TWSTO));
 	TWCR |= (1<<TWINT);
+}
+
+unsigned char I2C_receive(void)
+{
+	unsigned char data = TWDR;
+	TWCR &= ~((1<<TWSTA)|(1<<TWSTO));
+	TWCR |= (1<<TWINT);
+	return data;
 }
 
 void I2C_sendSLAW()

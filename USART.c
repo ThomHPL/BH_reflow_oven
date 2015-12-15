@@ -56,7 +56,7 @@ void RS232_println(char* str)
 	RS232_print("\r\n");
 }
 
-void RS232_sendBuffer(char* buffer, int bufferSize)
+void RS232_sendBuffer(unsigned char* buffer, int bufferSize)
 {
 	for(int i=0;i<bufferSize;i++)
 	{

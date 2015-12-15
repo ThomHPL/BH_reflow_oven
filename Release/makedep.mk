@@ -20,6 +20,8 @@ menu.c
 
 OS.c
 
+RTC.c
+
 SPI.c
 
 timers.c

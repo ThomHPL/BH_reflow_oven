@@ -53,6 +53,7 @@ C_SRCS +=  \
 ../MAX.c \
 ../menu.c \
 ../OS.c \
+../RTC.c \
 ../SPI.c \
 ../timers.c \
 ../USART.c
@@ -74,6 +75,7 @@ main.o \
 MAX.o \
 menu.o \
 OS.o \
+RTC.o \
 SPI.o \
 timers.o \
 USART.o
@@ -89,6 +91,7 @@ main.o \
 MAX.o \
 menu.o \
 OS.o \
+RTC.o \
 SPI.o \
 timers.o \
 USART.o
@@ -104,6 +107,7 @@ main.d \
 MAX.d \
 menu.d \
 OS.d \
+RTC.d \
 SPI.d \
 timers.d \
 USART.d
@@ -119,6 +123,7 @@ main.d \
 MAX.d \
 menu.d \
 OS.d \
+RTC.d \
 SPI.d \
 timers.d \
 USART.d
@@ -151,6 +156,8 @@ ADDITIONAL_DEPENDENCIES:= $(HEX_FLASH_FILE_PATH) $(LSS_FILE_PATH) $(HEX_EEPROM_F
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR/GNU C Compiler
+
+
 
 
 

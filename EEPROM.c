@@ -4,52 +4,147 @@
  * Created: 09/12/2015 18:13:00
  *  Author: Thomas
  */ 
+#include "main.h"
 #include "EEPROM.h"
 #include "I2C.h"
-unsigned int pointer;
-unsigned int pageWidth;
-unsigned char* buffer;
+#include "USART.h"
+
+char	isSending	=	0;
+unsigned int	pointer;
+unsigned int	pageWidth;
+unsigned char*	buffer;
 
 // internal functions
+void readPage(unsigned char statusCode);
 void writeByte(unsigned char statusCode);
 void writePage(unsigned char statusCode);
 void erasePage(unsigned char statusCode);
 
-void EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr)
+
+char EEPROM_isReady()
 {
+	char ready = 0;
+	ready = ~isSending;
+}
+
+unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, unsigned char pageSize)
+{
+	if((pageAddr&(pageSize-1))!=0)
+		return;
+	isSending = 1;
+	buffer = malloc(pageSize);
+	pointer = pageAddr;
+	pageWidth = pageSize;
+	I2C_setAddress(deviceAddr);
+	I2C_setFunction(readPage);
+	I2C_start();
+}
+char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr)
+{
+	if(isSending==1)
+		return 0;
+	isSending = 1;
 	pointer = byteAddr;
 	pageWidth = 1;
 	buffer = data;
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(writePage);
 	I2C_start();
+	return 1;
 }
 
-void EEPROM_writePage(unsigned char* data,unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize)
+char EEPROM_writePage(unsigned char* data,unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize)
 {
 	// test if the address is at the beginning of a page
 	if((pageAddr&(pageSize-1))!=0)
-		return;
+		return -1;
+	while(isSending==1)
+	{
+		//RS232_println("EEPROM busy . . .");
+	}
 
+	isSending = 1;	
 	pointer = pageAddr;
 	pageWidth = pageSize;
 	buffer = data;
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(writePage);
 	I2C_start();
+	return 1;
+
 }
 
-void EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize)
+char EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize)
 {
 	// test if the address is at the beginning of a page
 	if((pageAddr&(pageSize-1))!=0)
-		return;
-
+		return -1;
+	if(isSending==1)
+		return 0;
+		
+	isSending = 1;
 	pointer = pageAddr;
 	pageWidth = pageSize;
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(erasePage);
 	I2C_start();
+	return 1;
+}
+
+void readPage(unsigned char statusCode)
+{
+	static int index = 0;
+	
+	switch (statusCode)
+	{
+	case M_START_ACK :
+		I2C_sendSLAW();
+		break;
+	case M_SLAW_NACK :		// means the eeprom is not responding
+		I2C_stop();
+		index=0;
+		I2C_start();
+		return;
+	case M_SLAW_ACK :
+		I2C_send((unsigned char)(pointer>>8));
+		break;
+	case M_DATA_TX_ACK :
+		if(index == 2)
+			I2C_send((unsigned char)(pointer&0xFF));
+		else if(index == 3)
+			I2C_start();
+		break;
+	case M_REP_START_ACK:
+		I2C_sendSLAR();
+		break;
+	case M_SLAR_ACK :
+		*buffer=I2C_receive();
+		buffer++;
+		pointer +=1;
+		break;
+	case M_DATA_RX_ACK :
+		if (index < (pageWidth+4))
+		{
+			*buffer=I2C_receive();
+			buffer++;
+			pointer +=1;
+		}
+		else
+		{
+			*buffer=I2C_receive();
+			buffer++;
+			pointer+=1;
+			I2C_disableACK();
+		}		
+		break;
+	case M_DATA_RX_NACK :
+		I2C_stop();
+		index = 0;
+		I2C_enableACK();
+		isSending = 0;
+		return;
+	}
+	index+=1;
 }
 
 /************************************************************************/
@@ -66,6 +161,11 @@ void writeByte(unsigned char statusCode)
 	case M_START_ACK : 
 		I2C_sendSLAW();
 		break;
+	case M_SLAW_NACK :		// means the eeprom is not responding
+		I2C_stop();
+		index=0;
+		I2C_start();
+		return;
 	case M_SLAW_ACK :
 		I2C_send((unsigned char)(pointer>>8));
 		break;
@@ -81,6 +181,7 @@ void writeByte(unsigned char statusCode)
 		{
 			I2C_stop();
 			index = 0;
+			isSending=0;
 			return ;
 		}
 		break;
@@ -103,6 +204,12 @@ void writePage(unsigned char statusCode)
 	case M_START_ACK : 
 		I2C_sendSLAW();
 		break;
+	case M_SLAW_NACK :		// means the eeprom is not responding
+		RS232_println("EEPROM BUSY!");
+		I2C_stop();
+		index=0;
+		I2C_start();
+		return;
 	case M_SLAW_ACK :
 		I2C_send((unsigned char)(pointer>>8));
 		break;
@@ -118,6 +225,7 @@ void writePage(unsigned char statusCode)
 		{
 			I2C_stop();
 			index = 0;
+			isSending=0;
 			return ;
 		}
 		break;
@@ -139,6 +247,11 @@ void erasePage(unsigned char statusCode)
 	case M_START_ACK : 
 		I2C_sendSLAW();
 		break;
+	case M_SLAW_NACK :		// means the eeprom is not responding
+		I2C_stop();
+		index=0;
+		I2C_start();
+		return;
 	case M_SLAW_ACK :
 		I2C_send((unsigned char)(pointer>>8));
 		break;
@@ -154,6 +267,7 @@ void erasePage(unsigned char statusCode)
 		{
 			I2C_stop();
 			index = 0;
+			isSending=0;
 			return ;
 		}
 		break;
