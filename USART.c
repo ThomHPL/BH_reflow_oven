@@ -64,6 +64,12 @@ void RS232_sendBuffer(unsigned char* buffer, int bufferSize)
 	}
 }
 
+void RS232_println_debug(char* str)
+{
+	RS232_print("[DEBUG] ");
+	RS232_println(str);	
+}
+
 
 
 //CONTENU FONCTIONS INTERNES

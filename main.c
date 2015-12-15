@@ -58,6 +58,7 @@ int main(void)
 	//EEPROM_readPage(EEPROM_ADDR,0x0,16);
 	EEPROM_writePage(page,EEPROM_ADDR,0x0,16);
 	EEPROM_writePage(page,EEPROM_ADDR,0x10,16);
+	EEPROM_erasePage(EEPROM_ADDR,0x0,16);
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");
