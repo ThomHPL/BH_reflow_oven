@@ -9,13 +9,19 @@
 #ifndef EEPROM_H_
 #define EEPROM_H_
 
+unsigned char EEPROM_readByte(unsigned char deviceAddr,unsigned int byteAddr);
+
+/************************************************************************/
+/* Read a page at the given address										*/
+/* TESTED OK															*/
+/************************************************************************/
 unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, unsigned char pageSize);
 
 /************************************************************************/
 /* Write a byte at the given address                                    */
 /* TESTED OK															*/
 /************************************************************************/
-char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr);
+//char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr);
 
 /************************************************************************/
 /* Write a page at the given address                                    */

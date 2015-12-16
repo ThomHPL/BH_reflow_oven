@@ -38,6 +38,7 @@
 
 
 extern unsigned char SPI_statusCode;
+extern char I2C_isSending;
 
 /************************************************************************/
 /* Init of the SPI controller at the choosen clock frequency            */

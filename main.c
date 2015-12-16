@@ -20,6 +20,7 @@
 #include "timers.h"
 #include "I2C.h"
 #include "EEPROM.h"
+#include "RTC.h"
 
 char CBID_TglLed = 0;
 char CBID_delay = 0;
@@ -54,11 +55,15 @@ int main(void)
 	
 	sei();
 	
-	unsigned char page[16] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
-	//EEPROM_readPage(EEPROM_ADDR,0x0,16);
-	EEPROM_writePage(page,EEPROM_ADDR,0x0,16);
-	EEPROM_writePage(page,EEPROM_ADDR,0x10,16);
-	EEPROM_erasePage(EEPROM_ADDR,0x0,16);
+	unsigned char* page;
+	page = EEPROM_readPage(DS1307_ADDR,0,8);
+	char msg[16];
+	RS232_sendBuffer(page,8);
+	sprintf(msg,"%d",((page[1]>>4)&0b111));
+	RS232_println(msg);
+	sprintf(msg,"%d",(page[1]&0b1111));
+	RS232_println(msg);
+	
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");

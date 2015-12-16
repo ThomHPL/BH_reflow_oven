@@ -13,11 +13,6 @@
 void hardware_init(void)
 {
 
-	statusLed_init();
-	
-	lcd_init(LCD_DISP_ON);
-	
-	sei();
 }
 
 void statusLed_init(void)

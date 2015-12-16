@@ -11,6 +11,7 @@
 
 unsigned char SLA;
 unsigned char I2C_statusCode;
+char I2C_isSending = 0;
 
 // pointer to the function to be used 
 void (*I2C_function)(unsigned char statusCode);
@@ -88,10 +89,4 @@ ISR(TWI_vect)
 	I2C_statusCode = TWSR & 0b11111000;
 	I2C_function(I2C_statusCode);
 	
-	/*
-	RS232_print("TWI interruption: ");
-	char msg[16];
-	sprintf(msg,"0x%X",I2C_statusCode);
-	RS232_println(msg);
-	*/	
 }
