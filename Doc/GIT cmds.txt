@@ -1,0 +1,9 @@
+Dans VIM:
+:w = save
+:q = quit
+
+Commandes GIT:
+
+git commit -a -m "commit msg"
+git push origin master
+git pull origin master
