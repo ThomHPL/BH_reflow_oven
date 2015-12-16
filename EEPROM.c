@@ -10,7 +10,7 @@
 #include "USART.h"
 
 // todo : separate functions to the I2C.c
-
+// to simplify the use of rtc
 
 //char	I2C_isSending	=	0;
 unsigned int	pointer;
