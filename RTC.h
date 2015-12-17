@@ -12,7 +12,12 @@
 
 #define	DS1307_ADDR	0b1101000
 
+unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned char byteAddr);
+
+void read(unsigned char statusCode);
+
 #endif /* RTC_H_ */
+
 /*
 #define		SECONDS			rtc_register[0]
 #define		MINUTES			rtc_register[1]

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>5.0</ProjectVersion>
     <ProjectGuid>{97b46b57-6d52-4fcd-8512-233cf663b88e}</ProjectGuid>
-    <avrdevice>ATmega88P</avrdevice>
+    <avrdevice>ATmega168</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>C</Language>
@@ -134,6 +134,12 @@
     <Compile Include="OS.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="PID.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="PID.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="RTC.c">
       <SubType>compile</SubType>
     </Compile>
@@ -152,10 +158,10 @@
     <Compile Include="timers.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="USART.c">
+    <Compile Include="RS232.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="USART.h">
+    <Compile Include="RS232.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

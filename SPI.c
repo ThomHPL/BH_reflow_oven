@@ -10,8 +10,9 @@
 #include "main.h"
 #include "MAX.h"
 #include "SPI.h"
-#include "USART.h"
+#include "RS232.h"
 
+uint32_t tmpFrame = NULL;
 uint32_t frame = NULL;
 char nbits = 32;
 
@@ -36,12 +37,12 @@ void SPI_init(unsigned char nbit)
 	SPCR = (1<<SPIE)|(0<<SPE)|(1<<MSTR)|(SPI_CPOL<<CPOL)|(SPI_CPHA<<CPHA)|(1<<SPR1);
 	
 	count = (nbits/8)-1;
-	frame = 0;	
+	tmpFrame = 0;	
 }
 
 void SPI_start()
 {
-	frame = 0;
+	tmpFrame = 0;
 	sbiBF(SPCR,SPE);
 	cbiBF(SPI_PORT,SPI_SS);
 	SPDR = 0x55;
@@ -54,15 +55,13 @@ uint32_t SPI_getFrame()
 
 ISR(SPI_STC_vect)
 {	
-	frame = (frame<<8) | SPDR;
+	tmpFrame = (tmpFrame<<8) | SPDR;
 	if(count==0)
 	{
+		frame=tmpFrame;
 		sbiBF(SPI_PORT,SPI_SS);
 		cbiBF(SPCR,SPE);
 		count = (nbits/8)-1;
-		char msg[16];
-		sprintf(msg,",%d",MAX_getTemp());
-		RS232_print(&msg);
 	}
 	else
 		count-=1;

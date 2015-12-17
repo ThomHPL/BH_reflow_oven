@@ -12,7 +12,7 @@
 
 void hardware_init(void)
 {
-
+	
 }
 
 void statusLed_init(void)

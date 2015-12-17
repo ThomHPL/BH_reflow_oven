@@ -14,17 +14,17 @@
 #include "lcd.h"
 #include "OS.h"
 #include "menu.h"
-#include "USART.h"
+#include "RS232.h"
 #include "MAX.h"
 #include "SPI.h"
 #include "timers.h"
 #include "I2C.h"
 #include "EEPROM.h"
 #include "RTC.h"
+#include "PID.h"
 
 char CBID_TglLed = 0;
-char CBID_delay = 0;
-char CBID_AcqSpi = 0;
+char CBID_MAXroutine = 0;
 char CBID_RefreshLCD = 0;
 
 void delay(int ms);
@@ -32,7 +32,7 @@ void delaycb(void);
 void init(void);
 
 int blinkPeriod=1000;
-uint32_t pwmDCpourMille = 0;
+//uint32_t pwmDCpourMille = 0;
 unsigned char PWM_DC = 127;
 
 // MAIN
@@ -55,15 +55,12 @@ int main(void)
 	
 	sei();
 	
-	unsigned char* page;
-	page = EEPROM_readPage(DS1307_ADDR,0,8);
-	char msg[16];
-	RS232_sendBuffer(page,8);
-	sprintf(msg,"%d",((page[1]>>4)&0b111));
-	RS232_println(msg);
-	sprintf(msg,"%d",(page[1]&0b1111));
-	RS232_println(msg);
+	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
+	//unsigned char* page = EEPROM_readPage(EEPROM_ADDR,0,2);
+	//unsigned char* rtcData = RTC_read(DS1307_ADDR,4,1);
 	
+	PID_setParams(20,300,1);
+	PID_start(50,500);	
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");
@@ -74,7 +71,7 @@ int main(void)
 	RS232_print("Start PWM \r\n");
 	
 	CBID_TglLed	= OS_addTimerCallback(statusLedToggle,blinkPeriod);
-	CBID_AcqSpi = OS_addTimerCallback(MAX_start,500); // launch a measure every 500 ms
+	CBID_MAXroutine = OS_addTimerCallback(MAX_start,20);			// launch a measure every 20 ms
 
 	OS_start();
 		

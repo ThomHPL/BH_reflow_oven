@@ -53,10 +53,11 @@ C_SRCS +=  \
 ../MAX.c \
 ../menu.c \
 ../OS.c \
+../PID.c \
 ../RTC.c \
 ../SPI.c \
 ../timers.c \
-../USART.c
+../RS232.c
 
 
 PREPROCESSING_SRCS += 
@@ -75,10 +76,11 @@ main.o \
 MAX.o \
 menu.o \
 OS.o \
+PID.o \
 RTC.o \
 SPI.o \
 timers.o \
-USART.o
+RS232.o
 
 
 OBJS_AS_ARGS +=  \
@@ -91,10 +93,11 @@ main.o \
 MAX.o \
 menu.o \
 OS.o \
+PID.o \
 RTC.o \
 SPI.o \
 timers.o \
-USART.o
+RS232.o
 
 
 C_DEPS +=  \
@@ -107,10 +110,11 @@ main.d \
 MAX.d \
 menu.d \
 OS.d \
+PID.d \
 RTC.d \
 SPI.d \
 timers.d \
-USART.d
+RS232.d
 
 
 C_DEPS_AS_ARGS +=  \
@@ -123,10 +127,11 @@ main.d \
 MAX.d \
 menu.d \
 OS.d \
+PID.d \
 RTC.d \
 SPI.d \
 timers.d \
-USART.d
+RS232.d
 
 
 OUTPUT_FILE_PATH +=Projet_reflow_oven.elf
@@ -183,10 +188,12 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 
 
+
+
 ./%.o: .././%.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler
-	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -Os -fpack-struct -fshort-enums -Wall -c -std=gnu99  -mmcu=atmega88p   -MD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -Os -fpack-struct -fshort-enums -Wall -c -std=gnu99  -mmcu=atmega168   -MD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo Finished building: $<
 
 
@@ -211,7 +218,7 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 	@echo Building target: $@
 	@echo Invoking: AVR/GNU C/C++ Linker
-	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE)  -mmcu=atmega88p  -Wl,-Map=$(MAP_FILE_PATH_AS_ARGS) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)
+	$(QUOTE)$(AVR_APP_PATH)avr-gcc.exe$(QUOTE)  -mmcu=atmega168  -Wl,-Map=$(MAP_FILE_PATH_AS_ARGS) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS)
 	@echo Finished building target: $@
 
 
@@ -226,7 +233,7 @@ $(LSS_FILE_PATH): $(OUTPUT_FILE_PATH)
 	$(QUOTE)$(AVR_APP_PATH)avr-objdump.exe$(QUOTE) -h -S $(QUOTE)$<$(QUOTE) > $(QUOTE)$@$(QUOTE)
 
 size: $(OUTPUT_FILE_PATH)
-	@$(QUOTE)$(AVR_APP_PATH)avr-size.exe$(QUOTE) -C --mcu=atmega88p $(OUTPUT_FILE_PATH_AS_ARGS)
+	@$(QUOTE)$(AVR_APP_PATH)avr-size.exe$(QUOTE) -C --mcu=atmega168 $(OUTPUT_FILE_PATH_AS_ARGS)
 
 # Other Targets
 clean:

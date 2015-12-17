@@ -97,6 +97,8 @@ void I2C_sendSLAW();
 /************************************************************************/
 void I2C_sendSLAR();
 
+void write(unsigned char statusCode);
+
 
 
 

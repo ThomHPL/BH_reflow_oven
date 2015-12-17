@@ -5,6 +5,80 @@
  *  Author: Antoine
  */ 
 
+#include "RTC.h"
+#include "I2C.h"
+unsigned char* buffer;
+unsigned char pointer = 0;
+unsigned char pageWidth=0;
+
+unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned char byteAddr)
+{	
+	while(I2C_isSending==1)
+	{
+		RS232_println_debug("I2C bus busy . . .");
+	}
+	
+	I2C_isSending = 1;
+	free(buffer);
+	buffer = malloc(nBytes);
+	pointer = byteAddr;
+	pageWidth = nBytes;
+	I2C_setAddress(deviceAddr);
+	I2C_setFunction(read);
+	I2C_start();
+	while(I2C_isSending==1)
+	{
+		statusLedToggle();
+	}
+	return buffer;
+}
+
+void read(unsigned char statusCode)
+{
+	static int index = 0;
+	
+	switch (statusCode)
+	{
+	case M_START_ACK :
+		I2C_sendSLAW();
+		break;
+	case M_SLAW_NACK :
+		I2C_stop();
+		index=0;
+		I2C_start();
+		return;
+	case M_SLAW_ACK :
+		I2C_send(pointer);
+		break;
+	case M_DATA_TX_ACK :
+		I2C_start();
+		break;
+	case M_REP_START_ACK:
+		I2C_sendSLAR();
+		break;
+	case M_SLAR_ACK :
+		if(index == (pageWidth+3))
+			I2C_disableACK();
+		*buffer=I2C_receive();
+		buffer++;
+		pointer++;
+		break;
+	case M_DATA_RX_ACK :
+		if(index==(pageWidth+3))
+			I2C_disableACK();
+		*buffer=I2C_receive();
+		buffer++;
+		pointer++;	
+		break;
+	case M_DATA_RX_NACK :
+		I2C_stop();
+		index = 0;
+		I2C_enableACK();
+		I2C_isSending = 0;
+		return;
+	}
+	index+=1;
+}
 
 //
 //#include "RTC.h"
