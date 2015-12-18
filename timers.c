@@ -39,16 +39,10 @@ void PWM_setDutyCycle(unsigned char DC)
 void PWM_enable(void)
 {
 	TCCR0B |= (1<<CS02)|(1<<CS00);
-	char msg[16];
-	sprintf(msg,"DC : %d \r\n",PWM_DC);
 }
 
 void PWM_disable(void)
 {
 	TCCR0B &= ~((1<<CS02)|(1<<CS00));
 	cbiBF(PORTD,PD6);
-	RS232_print("COMMAND Disabled\r\n");
-	char msg[16];
-	sprintf(msg,"DC : %d \r\n",PWM_DC);
-	RS232_print(msg);
 }

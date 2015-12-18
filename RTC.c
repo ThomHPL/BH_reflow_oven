@@ -11,6 +11,14 @@ unsigned char* buffer;
 unsigned char pointer = 0;
 unsigned char pageWidth=0;
 
+void RTC_readMinutes()
+{
+	
+}
+
+/************************************************************************/
+/* TESTED OK                                                            */
+/************************************************************************/
 unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned char byteAddr)
 {	
 	while(I2C_isSending==1)
@@ -33,9 +41,13 @@ unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned c
 	return buffer;
 }
 
+/************************************************************************/
+/* TESTED OK                                                            */
+/************************************************************************/
 void read(unsigned char statusCode)
 {
 	static int index = 0;
+	static unsigned char n = 0;
 	
 	switch (statusCode)
 	{
@@ -59,19 +71,20 @@ void read(unsigned char statusCode)
 	case M_SLAR_ACK :
 		if(index == (pageWidth+3))
 			I2C_disableACK();
-		*buffer=I2C_receive();
-		buffer++;
+		I2C_receive();
 		pointer++;
 		break;
 	case M_DATA_RX_ACK :
 		if(index==(pageWidth+3))
 			I2C_disableACK();
-		*buffer=I2C_receive();
-		buffer++;
-		pointer++;	
+		buffer[n]=I2C_receive();
+		n++;
+		pointer++;
 		break;
 	case M_DATA_RX_NACK :
 		I2C_stop();
+		buffer[n]=I2C_receive();
+		n=0;
 		index = 0;
 		I2C_enableACK();
 		I2C_isSending = 0;

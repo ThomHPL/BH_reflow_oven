@@ -26,10 +26,12 @@
 char CBID_TglLed = 0;
 char CBID_MAXroutine = 0;
 char CBID_RefreshLCD = 0;
+char CBID_DataLogger = 0;
 
 void delay(int ms);
 void delaycb(void);
 void init(void);
+void dataLogger(void);
 
 int blinkPeriod=1000;
 //uint32_t pwmDCpourMille = 0;
@@ -57,10 +59,9 @@ int main(void)
 	
 	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
 	//unsigned char* page = EEPROM_readPage(EEPROM_ADDR,0,2);
-	//unsigned char* rtcData = RTC_read(DS1307_ADDR,4,1);
-	
-	PID_setParams(20,300,1);
-	PID_start(50,500);	
+	unsigned char* rtcData = RTC_read(DS1307_ADDR,8,0);
+	RS232_sendBuffer(rtcData,8);
+	while(TRUE==TRUE){}
 	
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");
@@ -157,7 +158,19 @@ char st_profiles_load(char input)
 char st_run(char input)
 {
 	static BOOL first_run = TRUE;
+	static BOOL cmd_enabled = FALSE;
 	
+	if((cmd_enabled==FALSE)&&(input==KEY_ENTER))
+	{
+		PID_setParams(0.42,600,100);
+		PID_start(150,5000);
+		cmd_enabled=TRUE;
+	}
+	else if((cmd_enabled==TRUE)&&(input==KEY_ENTER))
+	{
+		PID_stop();
+		cmd_enabled=FALSE;
+	}
 	
 	
 	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
@@ -205,6 +218,7 @@ char st_manual_cmd(char input)
 			lcd_puts_p(ST_MANUAL_CMD_TXT);
 			lcd_gotoxy(0,1);
 			lcd_puts_P("0FF");
+			CBID_MAXroutine = OS_removeTimerCallback(dataLogger);
 			sei();
 		}
 		else
@@ -216,6 +230,7 @@ char st_manual_cmd(char input)
 			lcd_puts_p(ST_MANUAL_CMD_TXT);
 			lcd_gotoxy(0,1);
 			lcd_puts_P("0N");
+			CBID_MAXroutine = OS_addTimerCallback(dataLogger,5000);
 			sei();
 		}			
 		cmd_enabled = ~cmd_enabled;
@@ -225,6 +240,13 @@ char st_manual_cmd(char input)
 	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
 		first_run=TRUE;
 	return nextstate;
+}
+
+void dataLogger(void)
+{
+	char msg[64];
+	sprintf(msg,"%d",MAX_getTemp());
+	RS232_println(msg);
 }
 
 char st_manual_set_cmd(char input)

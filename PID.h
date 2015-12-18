@@ -9,11 +9,11 @@
 #ifndef PID_H_
 #define PID_H_
 
-void PID_start(unsigned int consigne,unsigned int periode);
+void PID_start(int consigne,int periode);
 
 void PID_stop();
 
-void PID_setParams(unsigned int K,unsigned int Ti,unsigned int Td);
+void PID_setParams(float K,float Ti,float Td);
 
 void PID_routine();
 

@@ -86,6 +86,7 @@ void EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned ch
 void readPage(unsigned char statusCode)
 {
 	static int index = 0;
+	static unsigned char n=0;
 	
 	switch (statusCode)
 	{
@@ -112,19 +113,21 @@ void readPage(unsigned char statusCode)
 	case M_SLAR_ACK :
 		if (index == (pageWidth+4))
 			I2C_disableACK();
-		*buffer=I2C_receive();
-		buffer++;
+		buffer[n]=I2C_receive();
+		n++;
 		pointer +=1;
 		break;
 	case M_DATA_RX_ACK :
 		if (index == (pageWidth+4))
 			I2C_disableACK();
-		*buffer=I2C_receive();
-		buffer++;
+		buffer[n]=I2C_receive();
+		n++;
 		pointer+=1;		
 		break;
 	case M_DATA_RX_NACK :
 		I2C_stop();
+		buffer[n]=I2C_receive();
+		n=0;
 		index = 0;
 		I2C_enableACK();
 		I2C_isSending = 0;

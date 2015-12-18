@@ -8,8 +8,8 @@
 #ifndef MAX_H_
 #define MAX_H_
 
-//#define MAX_31855
-#define MAX_6675
+#define MAX_31855
+//#define MAX_6675
 
 #ifdef MAX_31855
 

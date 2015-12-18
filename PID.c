@@ -11,24 +11,25 @@
 #include "OS.h"
 #include "PID.h"
 
-unsigned int PID_K;
-unsigned int PID_Ti;
-unsigned int PID_Td;
-unsigned int PID_consigne;	// en °C
-unsigned int PID_period;	// en ms
-int PID_command;
+float PID_K;
+float PID_Ti;
+float PID_Td;
+int PID_consigne;	// en °C
+int PID_period;	// en ms
+float PID_command;
 
-int lastError;
-int lastInt;
+
+float lastE=0;
+float intE=0;
 
 unsigned char CBID_PID	= 0;
 
-void PID_start(unsigned int consigne,unsigned int periode)
+void PID_start(int consigne,int periode)
 {
 	PID_consigne=consigne;
 	PID_period=periode;
-	lastError=consigne-MAX_getTemp();
-	lastInt=0;
+	lastE=consigne-MAX_getTemp();
+	intE=0;
 	PID_command = 0;
 	PWM_Init(0);
 	PWM_enable();
@@ -37,10 +38,11 @@ void PID_start(unsigned int consigne,unsigned int periode)
 
 void PID_stop()
 {
+	PWM_disable();
 	CBID_PID	= OS_removeTimerCallback(CBID_PID);
 }
 
-void PID_setParams(unsigned int K,unsigned int Ti,unsigned int Td)
+void PID_setParams(float K,float Ti,float Td)
 {
 	PID_K=K;
 	PID_Ti=Ti;
@@ -51,47 +53,40 @@ void PID_routine()
 {
 	PID_compute();
 	PID_updateOutput();
-	char msg[16];
-	sprintf(msg,"Command: %d",PID_command);
-	RS232_println(msg);
 }
 
 void PID_compute()
 {
-	unsigned int currentValue	= MAX_getTemp();
-	int currentError	= PID_consigne-currentValue;
-	int currentInt		= lastInt + PID_period*currentError;		// implementer Tustin??
-	int currentDer		= (currentError-lastError)/PID_period;
+
+	float e = (float)PID_consigne-MAX_getTemp();
+	intE+=e*(float)PID_period/1000.0;
+	float dE=(e-lastE)/(float)PID_period;
 	
 	PID_command = 0;
-	int integrale = 0;
-	int derivee =0;
-	
-	
-	// gain K
-	PID_command = PID_K*currentError;
-	
-	// 1/pTi	:	integrateur
-	integrale = PID_command * currentInt * 1/PID_Ti;
-	
-	// p*Td
-	derivee = currentDer * PID_Td;
-	
+
 	// sommateur
 	
-	int estimation = PID_command + integrale + derivee;
+	float estimation = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
 	if(estimation >= 255 || estimation <= 0)	// anti saturation
 	{
-		PID_command = PID_command + derivee;
+		intE-=e*(float)PID_period/1000.0;
+		PID_command = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
 	}
 	else
-		PID_command = PID_command + integrale + derivee;
+		PID_command = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
 		
 	// saturation
-	if(PID_command>255)
+	if(PID_command>255.0)
 		PID_command=255;
-	else if(PID_command<0)
+	else if(PID_command<0.0)
 		PID_command=0;
+	
+	//
+	char msg[64];
+	sprintf(msg,"%d;%d;%d;%d",MAX_getTemp(),(int)PID_command,(int)e,(int)estimation);
+	RS232_println(msg);
+	lastE=e;
+
 }
 void PID_updateOutput()
 {
