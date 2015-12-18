@@ -59,8 +59,16 @@ int main(void)
 	
 	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
 	//unsigned char* page = EEPROM_readPage(EEPROM_ADDR,0,2);
-	unsigned char* rtcData = RTC_read(DS1307_ADDR,8,0);
-	RS232_sendBuffer(rtcData,8);
+//	unsigned char* rtcData = RTC_read(DS1307_ADDR,8,0);
+//	RS232_sendBuffer(rtcData,8);
+	
+	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
+	//EEPROM_writePage(page,EEPROM_ADDR,0,16);
+	unsigned char* pageRead = EEPROM_readPage(EEPROM_ADDR,0,16);
+	RS232_sendBuffer(pageRead,16);
+
+	
+	
 	while(TRUE==TRUE){}
 	
 	RS232_print("\r\n");

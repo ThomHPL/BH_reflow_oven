@@ -113,8 +113,7 @@ void readPage(unsigned char statusCode)
 	case M_SLAR_ACK :
 		if (index == (pageWidth+4))
 			I2C_disableACK();
-		buffer[n]=I2C_receive();
-		n++;
+		I2C_receive();
 		pointer +=1;
 		break;
 	case M_DATA_RX_ACK :
@@ -184,7 +183,6 @@ void writePage(unsigned char statusCode)
 /* Will be executed at each I2C interrupt                               */
 /* TESTED OK															*/
 /************************************************************************/
-/*
 void writeByte(unsigned char statusCode)
 {
 	static int index = 0;
@@ -221,9 +219,9 @@ void writeByte(unsigned char statusCode)
 	}
 	
 	index+=1;
-}*/
+}
 
-/*
+
 char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr)
 {
 	while(I2C_isSending==1)
@@ -240,7 +238,7 @@ char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int 
 	I2C_setFunction(writePage);
 	I2C_start();
 	return 1;
-}*/
+}
 
 /*
 unsigned char EEPROM_readByte(unsigned char deviceAddr,unsigned int byteAddr)
