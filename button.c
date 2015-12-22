@@ -8,7 +8,6 @@
 //DECLARATION DES VARIABLES GLOGALES
 volatile char KEY = NULL;
 char CBID_ReadKey = 0;
-char CBID_KEYDOWN_simulation = 0;
 
 //PROTOTYPE FONCTIONS INTERNES
 void read_key(void);
@@ -43,7 +42,7 @@ ISR(PCINT2_vect)
 	cli();
 	cbiBF(PCICR,PCIE2);
 	cbiBF(PCICR,PCIE0);  
-	CBID_ReadKey = OS_addTimerCallback(read_key,KEY_TMR);
+	CBID_ReadKey = OS_addCallback(read_key,KEY_TMR);
 	sei();
 }
 ISR(PCINT0_vect)
@@ -51,13 +50,13 @@ ISR(PCINT0_vect)
 	cli();
 	cbiBF(PCICR,PCIE2); 
 	cbiBF(PCICR,PCIE0); 
-	CBID_ReadKey = OS_addTimerCallback(read_key,KEY_TMR);
+	CBID_ReadKey = OS_addCallback(read_key,KEY_TMR);
 	sei();
 }
 
 void read_key(void)
 {
-	CBID_ReadKey=OS_removeTimerCallback(CBID_ReadKey);
+	CBID_ReadKey=OS_removeCallback(CBID_ReadKey);
 	
     char buttonsD = 0;
 	char buttonsB = 0;

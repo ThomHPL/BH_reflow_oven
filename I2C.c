@@ -5,6 +5,12 @@
  *  Author: Thomas
  */ 
 
+/*
+ *	Pour l'utiliser, il faut creer une fonction et passer son pointeur à I2C_setFunction.
+ *	Cette fonction devra prendre en argument le status code retourné par l'i2c.
+ *	Elle sera alors éxecutée à chaque interruption dû à l'i2c et peut ainsi gérer les différents cas en fonctions des différents status code
+ */
+
 #include "main.h"
 #include "I2C.h"
 #include "RS232.h"

@@ -33,8 +33,10 @@ void delaycb(void);
 void init(void);
 void dataLogger(void);
 
+int	tempPallier;
+int tempPic;
+
 int blinkPeriod=1000;
-//uint32_t pwmDCpourMille = 0;
 unsigned char PWM_DC = 127;
 
 // MAIN
@@ -58,15 +60,11 @@ int main(void)
 	sei();
 	
 	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
-	//unsigned char* page = EEPROM_readPage(EEPROM_ADDR,0,2);
-//	unsigned char* rtcData = RTC_read(DS1307_ADDR,8,0);
-//	RS232_sendBuffer(rtcData,8);
-	
-	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
 	//EEPROM_writePage(page,EEPROM_ADDR,0,16);
-	unsigned char* pageRead = EEPROM_readPage(EEPROM_ADDR,0,16);
-	RS232_sendBuffer(pageRead,16);
-
+	unsigned char* rpage=EEPROM_readPage(EEPROM_ADDR,0,16);
+	//unsigned char* pageRead = EEPROM_readPage(EEPROM_ADDR,0,16);
+	RS232_sendBuffer(rpage,16);
+	//RS232_println(RTC_getTime());
 	
 	
 	while(TRUE==TRUE){}
@@ -79,8 +77,8 @@ int main(void)
 	PWM_Init(PWM_DC);
 	RS232_print("Start PWM \r\n");
 	
-	CBID_TglLed	= OS_addTimerCallback(statusLedToggle,blinkPeriod);
-	CBID_MAXroutine = OS_addTimerCallback(MAX_start,20);			// launch a measure every 20 ms
+	CBID_TglLed	= OS_addCallback(statusLedToggle,blinkPeriod);
+	CBID_MAXroutine = OS_addCallback(MAX_start,20);			// launch a measure every 20 ms
 
 	OS_start();
 		
@@ -119,28 +117,17 @@ char st_welcome(char input)
 		first_run=TRUE;
 	return nextstate;
 }
-char st_temp_pts(char input)
-{
-	static BOOL first_run = TRUE;
-	
-	
 
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
-}
-char st_profiles(char input)
+char st_temp_palier(char input)
 {
 	static BOOL first_run = TRUE;
 	
-	
-	
 	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
 	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
 		first_run=TRUE;
 	return nextstate;
 }
+
 char st_profiles_save(char input)
 {
 	static BOOL first_run = TRUE;
@@ -226,7 +213,7 @@ char st_manual_cmd(char input)
 			lcd_puts_p(ST_MANUAL_CMD_TXT);
 			lcd_gotoxy(0,1);
 			lcd_puts_P("0FF");
-			CBID_MAXroutine = OS_removeTimerCallback(dataLogger);
+			CBID_MAXroutine = OS_removeCallback(dataLogger);
 			sei();
 		}
 		else
@@ -238,7 +225,7 @@ char st_manual_cmd(char input)
 			lcd_puts_p(ST_MANUAL_CMD_TXT);
 			lcd_gotoxy(0,1);
 			lcd_puts_P("0N");
-			CBID_MAXroutine = OS_addTimerCallback(dataLogger,5000);
+			CBID_MAXroutine = OS_addCallback(dataLogger,5000);
 			sei();
 		}			
 		cmd_enabled = ~cmd_enabled;

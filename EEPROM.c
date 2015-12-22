@@ -10,17 +10,14 @@
 #include "RS232.h"
 #include "hardware.h"
 
-//char	I2C_isSending	=	0;
 unsigned int	pointer;
 unsigned int	pageWidth;
 unsigned char*	buffer;
 
-// internal functions
+// Fonctions internes
 void readPage(unsigned char statusCode);
 void writePage(unsigned char statusCode);
 void erasePage(unsigned char statusCode);
-//void readByte(unsigned char statusCode);
-//void writeByte(unsigned char statusCode);
 
 unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, unsigned char pageSize)
 {
@@ -40,7 +37,7 @@ unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, u
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(readPage);
 	I2C_start();
-	while(I2C_isSending==1)
+	while(I2C_isSending==1)	// attend la fin de la transmission
 	{
 		statusLedToggle();
 	}
@@ -83,6 +80,11 @@ void EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned ch
 	EEPROM_writePage(page,deviceAddr,pageAddr,pageSize);
 }
 
+/************************************************************************/
+/* Function to read a page												*/
+/* Will be executed at each I2C interrupt                               */
+/* TESTED OK															*/
+/************************************************************************/
 void readPage(unsigned char statusCode)
 {
 	static int index = 0;
@@ -177,82 +179,3 @@ void writePage(unsigned char statusCode)
 	}
 	index+=1;
 }
-
-/************************************************************************/
-/* Function to write a byte												*/
-/* Will be executed at each I2C interrupt                               */
-/* TESTED OK															*/
-/************************************************************************/
-void writeByte(unsigned char statusCode)
-{
-	static int index = 0;
-	
-	switch (statusCode)
-	{
-	case M_START_ACK : 
-		I2C_sendSLAW();
-		break;
-	case M_SLAW_NACK :		// means the eeprom is not responding
-		I2C_stop();
-		index=0;
-		I2C_start();
-		return;
-	case M_SLAW_ACK :
-		I2C_send((unsigned char)(pointer>>8));
-		break;
-	case M_DATA_TX_ACK :
-		if(index==2)
-			I2C_send((unsigned char)(pointer&0xFF));
-		else if (index == 3)
-		{
-			I2C_send(*buffer);
-			pointer +=1;
-		}			
-		else
-		{
-			I2C_stop();
-			index = 0;
-			I2C_isSending=0;
-			return ;
-		}
-		break;
-	}
-	
-	index+=1;
-}
-
-
-char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr)
-{
-	while(I2C_isSending==1)
-	{
-		RS232_println_debug("EEPROM busy . . .");
-	}
-	
-	I2C_isSending = 1;
-	pointer = byteAddr;
-	pageWidth = 1;
-	free(buffer);
-	buffer = data;
-	I2C_setAddress(deviceAddr);
-	I2C_setFunction(writePage);
-	I2C_start();
-	return 1;
-}
-
-/*
-unsigned char EEPROM_readByte(unsigned char deviceAddr,unsigned int byteAddr)
-{
-	while(I2C_isSending==1)
-	{
-		RS232_println_debug("EEPROM busy . . .");
-	}
-	
-	I2C_isSending = 1;
-	buffer = realloc(buffer,1);
-	pointer = byteAddr;
-	pageWidth=1;
-	I2C_setAddress(deviceAddr);
-	I2C_setFunction(readPage);
-	I2C_start();
-}*/

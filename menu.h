@@ -30,6 +30,8 @@ typedef struct PROGMEM
 // main menu
 #define ST_WELCOME_ID				010
 #define ST_TEMP_PTS_ID				020
+	#define ST_TEMP_SETPALIER_ID		021
+	#define ST_TEMP_SETPIC_ID			022
 #define ST_PROFILES_ID				030
 	#define ST_PROFILES_SAVE_ID			031
 	#define ST_PROFILES_LOAD_ID			032
@@ -38,6 +40,7 @@ typedef struct PROGMEM
 // manual menu
 #define ST_MANUAL_ID				110
 #define ST_MANUAL_TEMP_ID			120
+	#define ST_MANUAL_SET_TEMP_ID		121
 #define ST_MANUAL_CMD_ID			130
 	#define ST_MANUAL_SET_CMD_ID		131
 

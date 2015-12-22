@@ -23,13 +23,10 @@ unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, u
 /************************************************************************/
 void EEPROM_writePage(unsigned char* data,unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize);
 
+/************************************************************************/
+/* TESTED OK                                                            */
+/************************************************************************/
 void EEPROM_erasePage(unsigned char deviceAddr,unsigned int pageAddr,unsigned char pageSize);
-
-/************************************************************************/
-/* Write a byte at the given address                                    */
-/* TESTED OK															*/
-/************************************************************************/
-//char EEPROM_writeByte(unsigned char* data,unsigned char deviceAddr,unsigned int byteAddr);
 
 
 #endif /* EEPROM_H_ */

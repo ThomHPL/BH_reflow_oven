@@ -31,13 +31,21 @@
 #define KEY_DOWN    4
 #define KEY_LEFT    5
 
-// define timer for the input (ms)
-
-#define KEY_TMR		20
-
+// delai anti rebond
+#define KEY_TMR		50
 
 // PROTOTYPE FONCTIONS EXTERNES
+
+/************************************************************************/
+/* Initialise le clavier                                                */
+/* Tested OK															*/
+/************************************************************************/
 void KEYBOARD_init(void);
+
+/************************************************************************/
+/* Retourne la dernière touche apuuyée                                  */
+/* Tested OK															*/
+/************************************************************************/
 char KEYBOARD_getKey(void);
 
 

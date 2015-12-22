@@ -12,6 +12,8 @@
 
 #define	DS1307_ADDR	0b1101000
 
+char* RTC_getTime(void);
+
 unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned char byteAddr);
 
 void read(unsigned char statusCode);

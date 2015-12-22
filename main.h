@@ -28,10 +28,10 @@ unsigned char StateMachine(char state, unsigned char stimuli);
 
 // main menu
 char st_welcome(char input);
-char st_temp_pts(char input);
-char st_profiles(char input);
-	char st_profiles_save(char input);
-	char st_profiles_load(char input);
+char st_temp_palier(char input);
+char st_temp_pic(char input);
+char st_profiles_save(char input);
+char st_profiles_load(char input);
 char st_run(char input);
 
 // manual menu

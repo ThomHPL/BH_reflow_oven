@@ -7,11 +7,11 @@ extern unsigned char OS_CURRENT_STATE;
 
 void OS_init(void);
 void OS_start(void);
-//void OS_refreshLcd(void);
+
 unsigned char OS_stateMachine(char state, unsigned char stimuli);
 
-unsigned char OS_addTimerCallback(void(*ptFonction)(void), unsigned int period);
-unsigned char OS_removeTimerCallback(unsigned char CB_ID);
+unsigned char OS_addCallback(void(*ptFonction)(void), unsigned int period);
+unsigned char OS_removeCallback(unsigned char CB_ID);
 unsigned char OS_updateCallbackTime(unsigned char CB_ID,unsigned int time);
 
 

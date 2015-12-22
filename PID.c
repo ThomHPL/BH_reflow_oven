@@ -33,13 +33,13 @@ void PID_start(int consigne,int periode)
 	PID_command = 0;
 	PWM_Init(0);
 	PWM_enable();
-	CBID_PID	= OS_addTimerCallback(PID_routine,PID_period);
+	CBID_PID	= OS_addCallback(PID_routine,PID_period);
 }
 
 void PID_stop()
 {
 	PWM_disable();
-	CBID_PID	= OS_removeTimerCallback(CBID_PID);
+	CBID_PID	= OS_removeCallback(CBID_PID);
 }
 
 void PID_setParams(float K,float Ti,float Td)

@@ -20,7 +20,7 @@ void OS_init(void)
 	
  	unsigned char i;
 	
- 	//Initialisation pour variables CallBack
+ 	//Initialisation des callback
  	for (i=0; i<TIMER_CB_MAX; i++)
  	{
   		 TIMER_CB_FUNC[i] = 0;
@@ -116,7 +116,10 @@ void OS_start()
 
 unsigned char OS_stateMachine(char state, unsigned char stimuli)
 {
-    unsigned char nextstate = state;    // Default stay in same state
+	// reste dans le meme état par défaut
+    unsigned char nextstate = state;
+	
+	// parcours tous les états
     unsigned char i, j;
     for (i=0; ( j=pgm_read_byte(&Menu_Nextstate[i].state) ); i++ )
     {
@@ -132,10 +135,11 @@ unsigned char OS_stateMachine(char state, unsigned char stimuli)
 }
 
 
-unsigned char OS_addTimerCallback(void(*ptFonction)(void), unsigned int period)
+unsigned char OS_addCallback(void(*ptFonction)(void), unsigned int period)
 {
-	unsigned int i=1; //Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
-	 
+	//Attention, on commence à 1 (IDCB = 0 --> callback non enregistrée)
+	unsigned int i=1;
+	
  	while (TIMER_CB_FUNC[i]!=0 && i<TIMER_CB_MAX) i++;
 	
 	// S'il reste de la place on enregistre et on retourne l'id du callback
@@ -146,10 +150,10 @@ unsigned char OS_addTimerCallback(void(*ptFonction)(void), unsigned int period)
   		 TIMER_CB_TICK[i] = 0; //Initialiser le compteur à 0;
    	     return i; // ID du call back
   	}
- 	else return 255; //Il n'y a plus de place pour enregistrer un callback
+ 	else return 255; //Retourne 255 si il n'y a plus de place pour enregistrer un callback
 }
 
-unsigned char OS_removeTimerCallback(unsigned char CB_ID)
+unsigned char OS_removeCallback(unsigned char CB_ID)
 {
    	TIMER_CB_FUNC[CB_ID] = 0;
   	TIMER_CB_TIME[CB_ID] = 0;
@@ -167,10 +171,10 @@ ISR(TIMER2_COMPA_vect)
 	cli();
 	
 	unsigned int j=1; //Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
-	while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++;
+	while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++; // sert à trouver le nombre de callback enregistrées
 	
 	unsigned char i;
-  	for (i = 0; i < j; i++) TIMER_CB_TICK[i]++;
+  	for (i = 0; i < j; i++) TIMER_CB_TICK[i]++; // pour chaque callback enregistrée, on incrémente le tick
 
 	sei();
 }

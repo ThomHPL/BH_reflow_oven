@@ -10,10 +10,25 @@
 unsigned char* buffer;
 unsigned char pointer = 0;
 unsigned char pageWidth=0;
+unsigned char DATA[8];
 
-void RTC_readMinutes()
+char* RTC_getTime(void)
 {
-	
+	// "HH:MM:SS"+0x00
+	char str[9];
+	DATA[0]=RTC_read(DS1307_ADDR,1,0);
+	DATA[1]=RTC_read(DS1307_ADDR,1,1);
+	DATA[2]=RTC_read(DS1307_ADDR,1,2);
+	str[8]=0x00;
+	str[7]=(DATA[0]&0b1111) | 0x30;
+	str[6]=((DATA[0]&0b1110000)>>4) | 0x30;
+	str[5]=":";
+	str[4]=(DATA[1]&0b1111) | 0x30;
+	str[3]=((DATA[1]&0b1110000)>>4) | 0x30;
+	str[2]=":";
+	str[1]=(DATA[2]&0b1111) | 0x30;
+	str[0]=((DATA[2]&0b10000)>>4) | 0x30;
+	return &str;
 }
 
 /************************************************************************/
