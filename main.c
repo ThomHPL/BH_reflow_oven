@@ -33,8 +33,8 @@ void delaycb(void);
 void init(void);
 void dataLogger(void);
 
-int	tempPallier;
-int tempPic;
+int	tempPalier = 150;
+int tempPic = 250;
 
 int blinkPeriod=1000;
 unsigned char PWM_DC = 127;
@@ -59,26 +59,15 @@ int main(void)
 	
 	sei();
 	
-	//unsigned char page[] = {0,1,2,3,4,5,6,7,8,9,0xA,0xB,0xC,0xD,0xE,0xF};
-	//EEPROM_writePage(page,EEPROM_ADDR,0,16);
-	unsigned char* rpage=EEPROM_readPage(EEPROM_ADDR,0,16);
-	//unsigned char* pageRead = EEPROM_readPage(EEPROM_ADDR,0,16);
-	RS232_sendBuffer(rpage,16);
-	//RS232_println(RTC_getTime());
-	
-	
-	while(TRUE==TRUE){}
-	
+	// header
 	RS232_print("\r\n");
 	RS232_print("BH REFLOW OVEN V00.00.01");
 	RS232_print("\r\n\r\n\0");
 	
-
 	PWM_Init(PWM_DC);
-	RS232_print("Start PWM \r\n");
 	
 	CBID_TglLed	= OS_addCallback(statusLedToggle,blinkPeriod);
-	CBID_MAXroutine = OS_addCallback(MAX_start,20);			// launch a measure every 20 ms
+	CBID_MAXroutine = OS_addCallback(MAX_start,20);				// launch a measure every 20 ms
 
 	OS_start();
 		
@@ -121,6 +110,94 @@ char st_welcome(char input)
 char st_temp_palier(char input)
 {
 	static BOOL first_run = TRUE;
+	if(first_run==TRUE)
+	{
+		char msg[16];
+		sprintf(msg,"%d",tempPalier);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPALIER_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+		first_run=FALSE;
+	}
+	else if(input==KEY_UP && tempPalier<=250)
+	{
+		tempPalier+=5;
+		char msg[16];
+		sprintf(msg,"%d",tempPalier);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPALIER_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+	}
+	else if(input == KEY_DOWN && tempPalier>=50)
+	{
+		tempPalier-=5;
+		char msg[16];
+		sprintf(msg,"%d",tempPalier);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPALIER_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+	}
+	
+	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
+	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
+		first_run=TRUE;
+	return nextstate;
+}
+
+char st_temp_pic(char input)
+{
+	static BOOL first_run = TRUE;
+	if(first_run==TRUE)
+	{
+		char msg[16];
+		sprintf(msg,"%d",tempPic);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPIC_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+		first_run=FALSE;
+	}
+	else if(input==KEY_UP && tempPic<=350)
+	{
+		tempPic+=5;
+		char msg[16];
+		sprintf(msg,"%d",tempPic);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPIC_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+	}
+	else if(input == KEY_DOWN && tempPic>=150)
+	{
+		tempPic-=5;
+		char msg[16];
+		sprintf(msg,"%d",tempPic);
+		cli();
+		lcd_clrscr();
+		lcd_gotoxy(0,0);
+		lcd_puts_p(ST_TEMP_SETPIC_TXT);
+		lcd_gotoxy(0,1);
+		lcd_puts(msg);
+		sei();
+	}
 	
 	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
 	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
@@ -139,6 +216,7 @@ char st_profiles_save(char input)
 		first_run=TRUE;
 	return nextstate;
 }
+
 char st_profiles_load(char input)
 {
 	static BOOL first_run = TRUE;
@@ -150,6 +228,7 @@ char st_profiles_load(char input)
 		first_run=TRUE;
 	return nextstate;
 }
+
 char st_run(char input)
 {
 	static BOOL first_run = TRUE;
@@ -186,6 +265,7 @@ char st_manual(char input)
 		first_run=TRUE;
 	return nextstate;
 }
+
 char st_manual_temp(char input)
 {
 	static BOOL first_run = TRUE;
@@ -197,6 +277,7 @@ char st_manual_temp(char input)
 		first_run=TRUE;
 	return nextstate;
 }
+
 char st_manual_cmd(char input)
 {
 	static BOOL first_run = TRUE;
@@ -235,13 +316,6 @@ char st_manual_cmd(char input)
 	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
 		first_run=TRUE;
 	return nextstate;
-}
-
-void dataLogger(void)
-{
-	char msg[64];
-	sprintf(msg,"%d",MAX_getTemp());
-	RS232_println(msg);
 }
 
 char st_manual_set_cmd(char input)
@@ -295,3 +369,9 @@ char st_manual_set_cmd(char input)
 	return nextstate;
 }
 
+void dataLogger(void)
+{
+	char msg[64];
+	sprintf(msg,"%d",MAX_getTemp());
+	RS232_println(msg);
+}

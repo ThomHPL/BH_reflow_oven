@@ -46,6 +46,8 @@ typedef struct PROGMEM
 
 extern const char ST_WELCOME_TXT[];
 extern const char ST_TEMP_PTS_TXT[];
+extern const char ST_TEMP_SETPALIER_TXT[];
+extern const char ST_TEMP_SETPIC_TXT[];
 extern const char ST_PROFILES_TXT[];
 extern const char ST_PROFILES_SAVE_TXT[];
 extern const char ST_PROFILES_LOAD_TXT[];
@@ -53,6 +55,7 @@ extern const char ST_RUN_TXT[];
 
 extern const char ST_MANUAL_TXT[];
 extern const char ST_MANUAL_TEMP_TXT[];
+extern const char ST_MANUAL_SET_TEMP_TXT[];
 extern const char ST_MANUAL_CMD_TXT[];
 extern const char ST_MANUAL_SET_CMD_TXT[];
 
