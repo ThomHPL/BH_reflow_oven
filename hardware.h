@@ -2,7 +2,7 @@
  * hardware.h
  *
  * Created: 30/10/2015 16:41:11
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 

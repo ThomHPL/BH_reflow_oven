@@ -2,7 +2,7 @@
  * PID.c
  *
  * Created: 16/12/2015 19:09:47
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 // PID type mixte
@@ -15,7 +15,7 @@ float PID_K;
 float PID_Ti;
 float PID_Td;
 int PID_consigne;	// en °C
-int PID_period;	// en ms
+int PID_period = 5000;	// en ms
 float PID_command;
 
 
@@ -24,11 +24,9 @@ float intE=0;
 
 unsigned char CBID_PID	= 0;
 
-void PID_start(int consigne,int periode)
+void PID_start()
 {
-	PID_consigne=consigne;
-	PID_period=periode;
-	lastE=consigne-MAX_getTemp();
+	lastE=PID_consigne-MAX_getTemp();
 	intE=0;
 	PID_command = 0;
 	PWM_Init(0);
@@ -40,6 +38,11 @@ void PID_stop()
 {
 	PWM_disable();
 	CBID_PID	= OS_removeCallback(CBID_PID);
+}
+
+void PID_setConsigne(int consigne)
+{
+	PID_consigne=consigne;
 }
 
 void PID_setParams(float K,float Ti,float Td)
@@ -88,6 +91,7 @@ void PID_compute()
 	lastE=e;
 
 }
+
 void PID_updateOutput()
 {
 	PWM_setDutyCycle((unsigned char)(PID_command));

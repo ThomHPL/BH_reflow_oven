@@ -2,7 +2,7 @@
  * MAX.h
  *
  * Created: 25/11/2015 14:06:34
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 #ifndef MAX_H_

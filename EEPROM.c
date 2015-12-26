@@ -2,7 +2,7 @@
  * EEPROM.c
  *
  * Created: 09/12/2015 18:13:00
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 #include "main.h"
 #include "EEPROM.h"
@@ -39,6 +39,7 @@ unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, u
 	I2C_start();
 	while(I2C_isSending==1)	// attend la fin de la transmission
 	{
+		statusLedToggle();
 		statusLedToggle();
 	}
 	return buffer;
@@ -173,6 +174,7 @@ void writePage(unsigned char statusCode)
 			I2C_stop();
 			index = 0;
 			I2C_isSending=0;
+			free(buffer);
 			return ;
 		}
 		break;

@@ -2,7 +2,7 @@
  * EEPROM.h
  *
  * Created: 09/12/2015 18:13:10
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 

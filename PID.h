@@ -2,14 +2,19 @@
  * PID.h
  *
  * Created: 16/12/2015 19:09:59
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 
 #ifndef PID_H_
 #define PID_H_
 
-void PID_start(int consigne,int periode);
+/************************************************************************/
+/* Démarre la régulation                                                */
+/************************************************************************/
+void PID_start();
+
+void PID_setConsigne(int consigne);
 
 void PID_stop();
 

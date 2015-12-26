@@ -2,7 +2,7 @@
  * hardware.c
  *
  * Created: 30/10/2015 16:38:27
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 #include "main.h"

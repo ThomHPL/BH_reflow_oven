@@ -38,11 +38,16 @@ void PWM_setDutyCycle(unsigned char DC)
 
 void PWM_enable(void)
 {
+	TCCR0A |= (1<<COM0A1);
 	TCCR0B |= (1<<CS02)|(1<<CS00);
+	TCNT0 = 0x0;
 }
 
 void PWM_disable(void)
 {
+	TCCR0A &= ~(1<<COM0A1);
 	TCCR0B &= ~((1<<CS02)|(1<<CS00));
+	TCNT0=0xFF;
 	cbiBF(PORTD,PD6);
+	// fix forcing pin to 0!!
 }

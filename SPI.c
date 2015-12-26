@@ -2,7 +2,7 @@
  * SPI.c
  *
  * Created: 16/11/2015 17:59:46
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 // Global variable

@@ -39,9 +39,9 @@ const MENU_STATE Menu_State[] PROGMEM = {
 	
 	// manual menu
 	{ST_MANUAL_ID,				ST_MANUAL_TXT,				st_manual},
-	{ST_MANUAL_TEMP_ID,			ST_MANUAL_TEMP_TXT,			NULL},
-		{ST_MANUAL_SET_TEMP_ID,		ST_MANUAL_SET_TEMP_TXT,		NULL},
-	{ST_MANUAL_CMD_ID,			ST_MANUAL_CMD_TXT,			NULL},
+	{ST_MANUAL_TEMP_ID,			ST_MANUAL_TEMP_TXT,			st_manual_temp},
+		{ST_MANUAL_SET_TEMP_ID,		ST_MANUAL_SET_TEMP_TXT,		st_manual_set_temp},
+	{ST_MANUAL_CMD_ID,			ST_MANUAL_CMD_TXT,			st_manual_cmd},
 		{ST_MANUAL_SET_CMD_ID,		ST_MANUAL_SET_CMD_TXT,		st_manual_set_cmd},		
 
 	{0,							NULL,						NULL},

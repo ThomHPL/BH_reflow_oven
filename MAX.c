@@ -2,7 +2,7 @@
  * MAX.c
  *
  * Created: 25/11/2015 14:04:52
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 #include "main.h"

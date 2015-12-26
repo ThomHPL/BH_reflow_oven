@@ -2,7 +2,7 @@
  * I2C.c
  *
  * Created: 09/12/2015 07:49:44
- *  Author: Thomas
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
 /*

@@ -1,3 +1,10 @@
+/*
+ * main.h
+ *
+ * Created: 30/10/2015 14:29:45
+ *  Author: BOSTEM Antoine & HERPOEL Thomas
+ */
+
 // main.h
 
 #ifndef _main_h_
@@ -37,8 +44,9 @@ char st_run(char input);
 // manual menu
 char st_manual(char input);
 char st_manual_temp(char input);
+char st_manual_set_temp(char input);
 char st_manual_cmd(char input);
-	char st_manual_set_cmd(char input);
+char st_manual_set_cmd(char input);
 	
 enum {IDLE,PREHEAT,SOAK,DWELL,COOLING};
 
