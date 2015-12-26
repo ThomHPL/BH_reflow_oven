@@ -8,7 +8,7 @@
 #include "timers.h"
 
 unsigned char OS_CURRENT_STATE;			// holds the current state id
-
+BOOL OS_first_run=TRUE;
 
 void (*TIMER_CB_FUNC[TIMER_CB_MAX])(void);
 unsigned int TIMER_CB_TIME[TIMER_CB_MAX];
@@ -59,24 +59,22 @@ void OS_start()
 		unsigned int j=1; //Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
 		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++; // pour trouver le nombre de callback enregistrées
 		
-		// Check les conditions pour rappeler les fonctions liées au temps
-  		for (idx = 1; idx < j; idx++)
+  		for (idx = 1; idx < j; idx++)		// pour chaque identificateur de callback
     	{
-	 		if (TIMER_CB_FUNC[idx]) //Si on a l'adresse d'une fonction CB à cet index
-     			if (TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx])//Si on est arrivé au nombre de mS demandé, on appelle la fonction 
-      			{ 
-	  				//TIMER_CB_TICK[idx] = TIMER_CB_TICK[idx] - TIMER_CB_TIME[idx];
+	 		if (TIMER_CB_FUNC[idx])			//	si on a l'adresse d'une fonction CB à cet index
+     			if (TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx])	// si on est arrivé au nombre de ms demandé 
+      			{
 					TIMER_CB_TICK[idx] = 0;
-      				TIMER_CB_FUNC[idx]();  //Appel de la fonction enregistrée!					
+      				TIMER_CB_FUNC[idx]();	// Appel de la fonction enregistrée!					
 	 			}
   		}
 		
-		//Gestion machine d'état
+		// Gestion machine d'état
 		
-		// 1 - Read buttons
+		// 1 - Lecture des boutons
 		input = KEYBOARD_getKey();
 		
-		// 2 - display available state text
+		// 2 - Affiche le texte lié à l'état
 		if (statetext) 
 		{
 			cli();
@@ -87,10 +85,11 @@ void OS_start()
 			statetext = NULL;
 		}
 		
-		// 3 - Call available state function         
+		// 3 - Appel de la fonction liée à l'état    
 		if (pStateFunc)
 		{
 	  		nextstate = pStateFunc(input);
+			OS_first_run=FALSE;
 		}	
 		else
 		{
@@ -99,6 +98,7 @@ void OS_start()
 		 
 		if (nextstate != OS_CURRENT_STATE)  // il y a changement d'état 
 		{
+			OS_first_run=TRUE;
 			OS_CURRENT_STATE = nextstate; // l'état est maintenant le nouvel état de la séquence définie dans main.h
 			for (i=0; (j=pgm_read_byte(&Menu_State[i].state)); i++)
 			{
@@ -106,7 +106,6 @@ void OS_start()
 				{
 					statetext =  (PGM_P) pgm_read_word(&Menu_State[i].pText);
 					pStateFunc = (PGM_VOID_P) pgm_read_word(&Menu_State[i].pFunc);
-					//break;
 				}
 			}
 		}		

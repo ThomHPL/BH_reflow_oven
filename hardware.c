@@ -10,11 +10,6 @@
 #include "hardware.h"
 #include "lcd.h"
 
-void hardware_init(void)
-{
-	
-}
-
 void statusLed_init(void)
 {
 	sbiBF(DDRD,PIN_STATUS_LED);		// output Mode

@@ -29,10 +29,11 @@ void init(void);
 void dataLogger(void);
 
 char CBID_TglLed = 0;
-int blinkPeriod=1000;
 char CBID_MAXroutine = 0;
 char CBID_DataLogger = 0;
 
+// running parameters
+int blinkPeriod=1000;
 unsigned char PWM_DC = 127;
 int	TEMP = 50;
 int	tempPalier = 150;
@@ -41,16 +42,23 @@ int tempPic = 250;
 // MAIN
 int main(void)
 {	
+	// initialisation du systeme
 	lcd_init(LCD_DISP_ON);
 	RS232_init(9600);	
 	statusLed_init();
 	KEYBOARD_init();
 	MAX_init();
 	I2C_init(100);
-	
+	PWM_Init(PWM_DC);
 	OS_init();
-	
 	sei();
+	
+	// paramètres du régulateur mixte
+	PID_setParams(0.42,600,100);
+
+	// démarrage des callback	
+	CBID_TglLed	= OS_addCallback(statusLedToggle,blinkPeriod);
+	CBID_MAXroutine = OS_addCallback(MAX_start,20);					// launch a measure every 20 ms
 	
 	// header
 	RS232_println("BH REFLOW OVEN V01.00.00");
@@ -59,13 +67,7 @@ int main(void)
 	RTC_getTime(str);
 	RS232_println(str);
 	
-	PWM_Init(PWM_DC);
-	
-	CBID_TglLed	= OS_addCallback(statusLedToggle,blinkPeriod);
-	CBID_MAXroutine = OS_addCallback(MAX_start,20);					// launch a measure every 20 ms
-
-	PID_setParams(0.42,600,100);
-			
+	// démarrage de l'OS
 	OS_start();
 		
 	return 1;
@@ -75,12 +77,11 @@ int main(void)
 // Tested OK
 char st_welcome(char input)
 {
-	static BOOL first_run = TRUE;
 	static int32_t oldTmp=0;
 	int32_t tmp = 0;
 	tmp = MAX_getTemp();
 	
-	if(tmp!=oldTmp||first_run==TRUE)
+	if(tmp!=oldTmp||OS_first_run==TRUE)
 	{
 		char msg[16];
 		
@@ -93,19 +94,15 @@ char st_welcome(char input)
 		lcd_puts(msg);
 		sei();
 		oldTmp=tmp;
-		first_run=FALSE;
+
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_temp_palier(char input)
 {
-	static BOOL first_run = TRUE;
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
 		char msg[16];
 		sprintf(msg,"%d",tempPalier);
@@ -116,7 +113,6 @@ char st_temp_palier(char input)
 		lcd_gotoxy(0,1);
 		lcd_puts(msg);
 		sei();
-		first_run=FALSE;
 	}
 	else if(input==KEY_UP && tempPalier<=250)
 	{
@@ -145,16 +141,12 @@ char st_temp_palier(char input)
 		sei();
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_temp_pic(char input)
 {
-	static BOOL first_run = TRUE;
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
 		char msg[16];
 		sprintf(msg,"%d",tempPic);
@@ -165,7 +157,6 @@ char st_temp_pic(char input)
 		lcd_gotoxy(0,1);
 		lcd_puts(msg);
 		sei();
-		first_run=FALSE;
 	}
 	else if(input==KEY_UP && tempPic<=350)
 	{
@@ -194,16 +185,11 @@ char st_temp_pic(char input)
 		sei();
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_profiles_save(char input)
 {
-	static BOOL first_run = TRUE;
-	
 	if(input==KEY_ENTER)
 	{
 		unsigned char* data=malloc(4);
@@ -214,16 +200,11 @@ char st_profiles_save(char input)
 		EEPROM_writePage(data,EEPROM_ADDR,0,16);
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_profiles_load(char input)
 {
-	static BOOL first_run = TRUE;
-	
 	if(input==KEY_ENTER)
 	{
 		unsigned char* data=EEPROM_readPage(EEPROM_ADDR,0,16);
@@ -231,57 +212,38 @@ char st_profiles_load(char input)
 		tempPic=(int)((data[2]<<8)|data[3]);
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 
 char st_run(char input)
 {
-	static BOOL first_run = TRUE;
 	static BOOL cmd_enabled = FALSE;
 	
 	if((cmd_enabled == FALSE)&&(input == KEY_ENTER))
 	{
 		PID_setConsigne(tempPalier);
 		PID_start();
+		CBID_DataLogger=OS_addCallback(dataLogger,1000);
 		cmd_enabled=TRUE;
 	}
 	else if((cmd_enabled == TRUE)&&(input == KEY_ENTER))
 	{
 		PID_stop();
+		OS_removeCallback(CBID_DataLogger);
 		cmd_enabled=FALSE;
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 
 // manual menu
 // Tested OK
-char st_manual(char input)
-{
-	static BOOL first_run = TRUE;
-	
-	
-	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
-}
-// Tested OK
 char st_manual_temp(char input)
 {
-	static BOOL first_run = TRUE;
 	static BOOL temp_enabled = FALSE;
 	
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
-		first_run=FALSE;
 		if(temp_enabled==TRUE)
 		{
 			cli();
@@ -302,7 +264,6 @@ char st_manual_temp(char input)
 			lcd_puts_P("OFF");
 			sei();
 		}
-		
 	}
 	else if(input == KEY_ENTER)
 	{
@@ -332,17 +293,12 @@ char st_manual_temp(char input)
 		}
 	}
 	
-	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_manual_set_temp(char input)
 {
-	static BOOL first_run = TRUE;
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
 		char msg[16];
 		sprintf(msg,"%d",TEMP);
@@ -353,7 +309,6 @@ char st_manual_set_temp(char input)
 		lcd_gotoxy(0,1);
 		lcd_puts(msg);
 		sei();
-		first_run=FALSE;
 	}
 	else if(input==KEY_UP && TEMP<=300)
 	{
@@ -384,20 +339,15 @@ char st_manual_set_temp(char input)
 		sei();
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_manual_cmd(char input)
 {
-	static BOOL first_run = TRUE;
 	static BOOL cmd_enabled = FALSE;
 	
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
-		first_run=FALSE;
 		if(cmd_enabled==TRUE)
 		{
 			cli();
@@ -450,16 +400,12 @@ char st_manual_cmd(char input)
 		}
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 // Tested OK
 char st_manual_set_cmd(char input)
 {
-	static BOOL first_run = TRUE;
-	if(first_run==TRUE)
+	if(OS_first_run==TRUE)
 	{
 		char msg[16];
 		sprintf(msg,"%d",PWM_DC);
@@ -470,7 +416,6 @@ char st_manual_set_cmd(char input)
 		lcd_gotoxy(0,1);
 		lcd_puts(msg);
 		sei();
-		first_run=FALSE;
 	}
 	else if(input==KEY_UP && PWM_DC<=250)
 	{
@@ -501,10 +446,7 @@ char st_manual_set_cmd(char input)
 		sei();
 	}
 	
-	unsigned char nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
-	if (nextstate!=OS_CURRENT_STATE) // Si on quitte l'état
-		first_run=TRUE;
-	return nextstate;
+	return OS_stateMachine(OS_CURRENT_STATE, input);
 }
 
 void dataLogger(void)

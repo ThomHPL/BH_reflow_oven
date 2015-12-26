@@ -2,9 +2,9 @@
 #define __OS_H
 
 #define	TIMER_CB_MAX		10
-
+#include "main.h"
 extern unsigned char OS_CURRENT_STATE;
-
+extern BOOL OS_first_run;
 void OS_init(void);
 void OS_start(void);
 
