@@ -2429,7 +2429,7 @@ Disassembly of section .text:
     163a:	08 95       	ret
 
 0000163c <MAX_init>:
-    163c:	80 e2       	ldi	r24, 0x20	; 32
+    163c:	80 e1       	ldi	r24, 0x10	; 16
     163e:	0e 94 41 10 	call	0x2082	; 0x2082 <SPI_init>
     1642:	08 95       	ret
 
@@ -2439,14 +2439,14 @@ Disassembly of section .text:
 
 0000164a <MAX_getTemp>:
     164a:	0e 94 68 10 	call	0x20d0	; 0x20d0 <SPI_getFrame>
-    164e:	22 e1       	ldi	r18, 0x12	; 18
+    164e:	23 e0       	ldi	r18, 0x03	; 3
     1650:	96 95       	lsr	r25
     1652:	87 95       	ror	r24
     1654:	77 95       	ror	r23
     1656:	67 95       	ror	r22
     1658:	2a 95       	dec	r18
     165a:	d1 f7       	brne	.-12     	; 0x1650 <MAX_getTemp+0x6>
-    165c:	7f 71       	andi	r23, 0x1F	; 31
+    165c:	77 70       	andi	r23, 0x07	; 7
     165e:	75 95       	asr	r23
     1660:	67 95       	ror	r22
     1662:	75 95       	asr	r23
