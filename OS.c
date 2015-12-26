@@ -55,7 +55,11 @@ void OS_start()
 	// main loop
 	while(TRUE)
 	{
-		// Gestion des callback
+		
+		/************************************************************************/
+		/*						Gestion des callbacks							*/
+		/************************************************************************/
+		
 		unsigned int j=1; //Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
 		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++; // pour trouver le nombre de callback enregistrées
 		
@@ -69,8 +73,10 @@ void OS_start()
 	 			}
   		}
 		
-		// Gestion machine d'état
-		
+		/************************************************************************/
+		/*					Gestion de la machine d'états						*/
+		/************************************************************************/
+
 		// 1 - Lecture des boutons
 		input = KEYBOARD_getKey();
 		
@@ -88,18 +94,19 @@ void OS_start()
 		// 3 - Appel de la fonction liée à l'état    
 		if (pStateFunc)
 		{
-	  		nextstate = pStateFunc(input);
-			OS_first_run=FALSE;
+	  		nextstate = pStateFunc(input);		// la fonction retourne le prochain état
+			OS_first_run=FALSE;					// ce n'est plus la première execution de l'état
 		}	
 		else
 		{
 			nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
 		}
-		 
-		if (nextstate != OS_CURRENT_STATE)  // il y a changement d'état 
+		
+		// 4 - Si l'état change...
+		if (nextstate != OS_CURRENT_STATE) 
 		{
-			OS_first_run=TRUE;
-			OS_CURRENT_STATE = nextstate; // l'état est maintenant le nouvel état de la séquence définie dans main.h
+			OS_first_run=TRUE;					// ce sera la première execution de l'état
+			OS_CURRENT_STATE = nextstate;		// l'état est maintenant le nouvel état de la séquence définie dans main.h
 			for (i=0; (j=pgm_read_byte(&Menu_State[i].state)); i++)
 			{
 				if (j == OS_CURRENT_STATE)
@@ -108,9 +115,8 @@ void OS_start()
 					pStateFunc = (PGM_VOID_P) pgm_read_word(&Menu_State[i].pFunc);
 				}
 			}
-		}		
-		
-	}     
+		}
+	}
 }
 
 unsigned char OS_stateMachine(char state, unsigned char stimuli)
@@ -136,7 +142,7 @@ unsigned char OS_stateMachine(char state, unsigned char stimuli)
 
 unsigned char OS_addCallback(void(*ptFonction)(void), unsigned int period)
 {
-	//Attention, on commence à 1 (IDCB = 0 --> callback non enregistrée)
+	// Attention, on commence à 1 (IDCB = 0 --> callback non enregistrée)
 	unsigned int i=1;
 	
  	while (TIMER_CB_FUNC[i]!=0 && i<TIMER_CB_MAX) i++;
@@ -145,11 +151,11 @@ unsigned char OS_addCallback(void(*ptFonction)(void), unsigned int period)
  	if (i<TIMER_CB_MAX)
  	{
   		 TIMER_CB_FUNC[i] = ptFonction;
-  		 TIMER_CB_TIME[i] = period; 
+  		 TIMER_CB_TIME[i] = period;
   		 TIMER_CB_TICK[i] = 0; //Initialiser le compteur à 0;
    	     return i; // ID du call back
   	}
- 	else return 255; //Retourne 255 si il n'y a plus de place pour enregistrer un callback
+ 	else return 0; // Retourne 0 si il n'y a plus de place pour enregistrer un callback
 }
 
 unsigned char OS_removeCallback(unsigned char CB_ID)

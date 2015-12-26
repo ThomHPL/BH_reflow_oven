@@ -2681,7 +2681,7 @@ Disassembly of section .text:
     1834:	2a 30       	cpi	r18, 0x0A	; 10
     1836:	31 05       	cpc	r19, r1
     1838:	b1 f7       	brne	.-20     	; 0x1826 <OS_addCallback+0xa>
-    183a:	8f ef       	ldi	r24, 0xFF	; 255
+    183a:	80 e0       	ldi	r24, 0x00	; 0
     183c:	08 95       	ret
     183e:	2a 30       	cpi	r18, 0x0A	; 10
     1840:	31 05       	cpc	r19, r1
@@ -2706,7 +2706,7 @@ Disassembly of section .text:
     1866:	10 82       	st	Z, r1
     1868:	82 2f       	mov	r24, r18
     186a:	08 95       	ret
-    186c:	8f ef       	ldi	r24, 0xFF	; 255
+    186c:	80 e0       	ldi	r24, 0x00	; 0
     186e:	08 95       	ret
 
 00001870 <OS_removeCallback>:
