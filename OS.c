@@ -7,8 +7,8 @@
 #include "menu.h"
 #include "timers.h"
 
-unsigned char OS_CURRENT_STATE;			// holds the current state id
-BOOL OS_first_run=TRUE;
+unsigned char OS_CURRENT_STATE;			// contient l'id de l'état courant
+BOOL OS_first_run=TRUE;					// indique si on est à la première execution d'un état (utile pour certains états)
 
 void (*TIMER_CB_FUNC[TIMER_CB_MAX])(void);
 unsigned int TIMER_CB_TIME[TIMER_CB_MAX];
@@ -18,25 +18,22 @@ volatile unsigned int TIMER_CB_TICK[TIMER_CB_MAX];
 void OS_init(void)
 {
 	
- 	unsigned char i;
+	// démarre le timer des callback
+	CB_TIMER_Init_1ms();
 	
- 	//Initialisation des callback
+	// Initialisation des callback
+ 	unsigned char i;
  	for (i=0; i<TIMER_CB_MAX; i++)
  	{
   		 TIMER_CB_FUNC[i] = 0;
   		 TIMER_CB_TIME[i] = 0;
 		 TIMER_CB_TICK[i] = 0;
-  	}	
+  	}
 
 }
 
 void OS_start()
 {
-	// start the callback timer
-	CB_TIMER_Init_1ms();
-
-	// for the CALLBACKS
-	unsigned char idx;
 	
 	// for the state machine
 	unsigned char nextstate;	// holds next state's id
@@ -44,13 +41,13 @@ void OS_start()
 	char (*pStateFunc)(char);	// point to the state's function
 	
 	unsigned char input = KEY_NULL;		// holds pressed key
-	unsigned char i,j;
+	//unsigned char i,j;
 	
 	// Init variables de la machine d'états
     OS_CURRENT_STATE = ST_WELCOME_ID;
     nextstate = OS_CURRENT_STATE;
 	statetext = ST_WELCOME_TXT;
-    pStateFunc = st_welcome;
+    pStateFunc = st_welcome;	
 	
 	// main loop
 	while(TRUE)
@@ -60,17 +57,18 @@ void OS_start()
 		/*						Gestion des callbacks							*/
 		/************************************************************************/
 		
-		unsigned int j=1; //Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
-		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++; // pour trouver le nombre de callback enregistrées
+		unsigned int j=1;					// Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
+		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++;		// pour trouver le nombre de callback enregistrées
 		
+		unsigned char idx;
   		for (idx = 1; idx < j; idx++)		// pour chaque identificateur de callback
     	{
-	 		if (TIMER_CB_FUNC[idx])			//	si on a l'adresse d'une fonction CB à cet index
-     			if (TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx])	// si on est arrivé au nombre de ms demandé 
-      			{
-					TIMER_CB_TICK[idx] = 0;
-      				TIMER_CB_FUNC[idx]();	// Appel de la fonction enregistrée!					
-	 			}
+     		if (TIMER_CB_FUNC[idx] &&
+				TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx])		// si on est arrivé au nombre de ms demandé 
+      		{
+				TIMER_CB_TICK[idx] = 0;
+      			TIMER_CB_FUNC[idx]();		// Appel de la fonction enregistrée!					
+	 		}
   		}
 		
 		/************************************************************************/
@@ -97,7 +95,7 @@ void OS_start()
 	  		nextstate = pStateFunc(input);		// la fonction retourne le prochain état
 			OS_first_run=FALSE;					// ce n'est plus la première execution de l'état
 		}	
-		else
+		else if(input!=KEY_NULL)
 		{
 			nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
 		}
@@ -106,7 +104,8 @@ void OS_start()
 		if (nextstate != OS_CURRENT_STATE) 
 		{
 			OS_first_run=TRUE;					// ce sera la première execution de l'état
-			OS_CURRENT_STATE = nextstate;		// l'état est maintenant le nouvel état de la séquence définie dans main.h
+			OS_CURRENT_STATE = nextstate;		// l'état est maintenant le nouvel état de la séquence définie dans le menu
+			unsigned char i;
 			for (i=0; (j=pgm_read_byte(&Menu_State[i].state)); i++)
 			{
 				if (j == OS_CURRENT_STATE)

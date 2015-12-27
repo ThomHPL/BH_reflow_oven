@@ -18,15 +18,12 @@ const char ST_MANUAL_TXT[]				PROGMEM = "MANUAL >";
 const char ST_MANUAL_TEMP_TXT[]			PROGMEM = "TEMPERATURE >";
 	const char ST_MANUAL_SET_TEMP_TXT[]		PROGMEM = "SET T' < ";
 const char ST_MANUAL_CMD_TXT[]			PROGMEM = "COMMANDE >";
-	const char ST_MANUAL_SET_CMD_TXT[]			PROGMEM = "DUTY CYCLE < ";
+	const char ST_MANUAL_SET_CMD_TXT[]		PROGMEM = "DUTY CYCLE < ";
 
 
 // MENU_STATE'S DEFINITION
 const MENU_STATE Menu_State[] PROGMEM = {
-//  STATE                       TEXT						FUNCTION
-
-	// MENUS
-	
+	// STATE					TEXT						FUNCTION
 	// main menu
 	{ST_WELCOME_ID,				ST_WELCOME_TXT,				st_welcome},
 	{ST_TEMP_PTS_ID,			ST_TEMP_PTS_TXT,			NULL},
@@ -49,10 +46,7 @@ const MENU_STATE Menu_State[] PROGMEM = {
 
 // MENU_NEXTSTATE'S DEFINITION
 const MENU_NEXTSTATE Menu_Nextstate[] PROGMEM = {
-//  STATE                       INPUT						NEXT STATE
-
-	// MENUS
-	
+	// STATE					INPUT						NEXT STATE
 	// main menu
 	{ST_WELCOME_ID,				KEY_NULL,					ST_WELCOME_ID},
 	{ST_WELCOME_ID,				KEY_UP,						ST_RUN_ID},
@@ -100,8 +94,8 @@ const MENU_NEXTSTATE Menu_Nextstate[] PROGMEM = {
 	{ST_MANUAL_CMD_ID,			KEY_UP,						ST_MANUAL_TEMP_ID},
 	{ST_MANUAL_CMD_ID,			KEY_DOWN,					ST_MANUAL_ID},
 	{ST_MANUAL_CMD_ID,			KEY_RIGHT,					ST_MANUAL_SET_CMD_ID},
-		{ST_MANUAL_SET_CMD_ID,			KEY_NULL,					ST_MANUAL_SET_CMD_ID},
-		{ST_MANUAL_SET_CMD_ID,			KEY_LEFT,					ST_MANUAL_CMD_ID},
+		{ST_MANUAL_SET_CMD_ID,		KEY_NULL,					ST_MANUAL_SET_CMD_ID},
+		{ST_MANUAL_SET_CMD_ID,		KEY_LEFT,					ST_MANUAL_CMD_ID},
 			
 	{0,							0,							0},		
 };

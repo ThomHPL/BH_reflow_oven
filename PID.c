@@ -63,20 +63,20 @@ void PID_compute()
 
 	float e = (float)PID_consigne-MAX_getTemp();
 	intE+=e*(float)PID_period/1000.0;
-	float dE=(e-lastE)/(float)PID_period;
+	float dE=(e-lastE)*1000.0/(float)PID_period;
 	
 	PID_command = 0;
 
 	// sommateur
 	
-	float estimation = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
+	float estimation = PID_K*(e + intE/PID_Ti + dE*PID_Td);
 	if(estimation >= 255 || estimation <= 0)	// anti saturation
 	{
 		intE-=e*(float)PID_period/1000.0;
-		PID_command = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
+		PID_command = PID_K*(e + intE/PID_Ti + dE*PID_Td);
 	}
 	else
-		PID_command = e*PID_K*(1 + intE/PID_Ti + dE*PID_Td);
+		PID_command = PID_K*(e + intE/PID_Ti + dE*PID_Td);
 		
 	// saturation
 	if(PID_command>255.0)
