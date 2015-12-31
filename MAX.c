@@ -25,7 +25,7 @@ int MAX_getTemp(void)
 	int temp = (int)(tmp & ((1<<(TEMP_SIZE-1))-1));
 	temp = temp/4;									//  LSB = 0.25°C
 	
-	if(tmp&(1<<(TEMP_SIZE-1))==1)
+	if((tmp&(1<<(TEMP_SIZE-1)))==1)
 	{
 		temp = -temp;
 	}

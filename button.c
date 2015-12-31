@@ -6,7 +6,7 @@
 #include "OS.h"
 
 //DECLARATION DES VARIABLES GLOGALES
-volatile char KEY = NULL;
+volatile char KEY = KEY_NULL;
 char CBID_ReadKey = 0;
 
 //PROTOTYPE FONCTIONS INTERNES

@@ -11,7 +11,8 @@
 #define _main_h_
 
 //INCLUDE
-
+#include <stdio.h>
+#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -20,7 +21,7 @@
 #define BOOL    char
 #define TRUE	1
 #define FALSE	0
-#define NULL	0
+//#define NULL	0
 
 #define EEPROM_ADDR	0b1010000
 

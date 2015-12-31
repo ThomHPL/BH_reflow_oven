@@ -5,16 +5,20 @@
  *  Author: BOSTEM Antoine & HERPOEL Thomas
  */ 
 
+#include "main.h"
 #include "RTC.h"
 #include "I2C.h"
+#include "hardware.h"
+#include "RS232.h"
 unsigned char* buffer;
-unsigned char pointer = 0;
-unsigned char pageWidth=0;
+unsigned char pointerRTC = 0;
+unsigned char pageWidthRTC=0;
 unsigned char DATA[8];
 
 void RTC_getTime(char* str)
 {
 	// "HH:MM:SS"+0x00
+	// voir datasheet pour savoir la position des differentes info
 	DATA[0]=*RTC_read(DS1307_ADDR,1,0);
 	DATA[1]=*RTC_read(DS1307_ADDR,1,1);
 	DATA[2]=*RTC_read(DS1307_ADDR,1,2);
@@ -42,8 +46,8 @@ unsigned char* RTC_read(unsigned char deviceAddr,unsigned int nBytes, unsigned c
 	I2C_isSending = 1;
 	free(buffer);
 	buffer = malloc(nBytes);
-	pointer = byteAddr;
-	pageWidth = nBytes;
+	pointerRTC = byteAddr;
+	pageWidthRTC = nBytes;
 	I2C_setAddress(deviceAddr);
 	I2C_setFunction(read);
 	I2C_start();
@@ -73,7 +77,7 @@ void read(unsigned char statusCode)
 		I2C_start();
 		return;
 	case M_SLAW_ACK :
-		I2C_send(pointer);
+		I2C_send(pointerRTC);
 		break;
 	case M_DATA_TX_ACK :
 		I2C_start();
@@ -82,17 +86,17 @@ void read(unsigned char statusCode)
 		I2C_sendSLAR();
 		break;
 	case M_SLAR_ACK :
-		if(index == (pageWidth+3))
+		if(index == (pageWidthRTC+3))
 			I2C_disableACK();
 		I2C_receive();
-		pointer++;
+		pointerRTC++;
 		break;
 	case M_DATA_RX_ACK :
-		if(index==(pageWidth+3))
+		if(index==(pageWidthRTC+3))
 			I2C_disableACK();
 		buffer[n]=I2C_receive();
 		n++;
-		pointer++;
+		pointerRTC++;
 		break;
 	case M_DATA_RX_NACK :
 		I2C_stop();

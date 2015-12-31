@@ -10,6 +10,9 @@
 
 #include "OS.h"
 #include "PID.h"
+#include "RS232.h"
+#include "timers.h"
+#include "MAX.h"
 
 float PID_K;
 float PID_Ti;
@@ -26,12 +29,13 @@ unsigned char CBID_PID	= 0;
 
 void PID_start()
 {
-	lastE=PID_consigne-MAX_getTemp();
+	lastE=(float)(PID_consigne-MAX_getTemp());
 	intE=0;
 	PID_command = 0;
 	PWM_Init(0);
 	PWM_enable();
 	CBID_PID	= OS_addCallback(PID_routine,PID_period);
+	RS232_println("T;cmd;e;intE;dE");
 }
 
 void PID_stop()
@@ -61,7 +65,7 @@ void PID_routine()
 void PID_compute()
 {
 
-	float e = (float)PID_consigne-MAX_getTemp();
+	float e = (float)(PID_consigne-MAX_getTemp());
 	intE+=e*(float)PID_period/1000.0;
 	float dE=(e-lastE)*1000.0/(float)PID_period;
 	
@@ -72,7 +76,7 @@ void PID_compute()
 	float estimation = PID_K*(e + intE/PID_Ti + dE*PID_Td);
 	if(estimation >= 255 || estimation <= 0)	// anti saturation
 	{
-		intE-=e*(float)PID_period/1000.0;
+		intE-=e*(float)PID_period/1000.0; // si sat, on retire l'intégrale qu'on vient de mesurer
 		PID_command = PID_K*(e + intE/PID_Ti + dE*PID_Td);
 	}
 	else
@@ -86,7 +90,7 @@ void PID_compute()
 	
 	//
 	char msg[64];
-	sprintf(msg,"%d;%d;%d;%d",MAX_getTemp(),(int)PID_command,(int)e,(int)estimation);
+	sprintf(msg,"%d;%d;%d;%d;%d",MAX_getTemp(),(int)PID_command,(int)e,(int)intE,(int)dE);
 	RS232_println(msg);
 	lastE=e;
 

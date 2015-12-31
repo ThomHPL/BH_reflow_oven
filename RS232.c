@@ -47,7 +47,7 @@ void RS232_print(char* str)
 	}
 }
 
-void RS232_println(char* str)
+void RS232_println(const char* str)
 {
 	while(*str!=0)
 	{

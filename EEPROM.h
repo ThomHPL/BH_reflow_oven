@@ -9,7 +9,6 @@
 #ifndef EEPROM_H_
 #define EEPROM_H_
 
-unsigned char EEPROM_readByte(unsigned char deviceAddr,unsigned int byteAddr);
 
 /************************************************************************/
 /* Read a page at the given address										*/

@@ -12,8 +12,8 @@
 #include "SPI.h"
 #include "RS232.h"
 
-uint32_t tmpFrame = NULL;
-uint32_t frame = NULL;
+uint32_t tmpFrame = 0;
+uint32_t frame = 0;
 char nbits = 32;
 
 //unsigned int frame = 0;

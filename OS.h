@@ -11,9 +11,9 @@ extern BOOL OS_first_run;
 void OS_init(void);
 void OS_start(void);
 
-unsigned char OS_stateMachine(char state, unsigned char stimuli);
+unsigned char OS_getNextState(char state, unsigned char stimuli);
 unsigned char OS_addCallback(void(*ptFonction)(void), unsigned int period);
 unsigned char OS_removeCallback(unsigned char CB_ID);
-unsigned char OS_updateCallbackTime(unsigned char CB_ID,unsigned int time);
+void OS_setCallbackPeriod(unsigned char CB_ID,unsigned int time);
 
 #endif //__OS_H

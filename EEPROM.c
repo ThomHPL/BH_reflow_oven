@@ -22,7 +22,7 @@ void erasePage(unsigned char statusCode);
 unsigned char* EEPROM_readPage(unsigned char deviceAddr,unsigned int pageAddr, unsigned char pageSize)
 {
 	if((pageAddr&(pageSize-1))!=0)
-		return;
+		return buffer;
 	
 	while(I2C_isSending==1)
 	{
@@ -49,7 +49,7 @@ void EEPROM_writePage(unsigned char* data,unsigned char deviceAddr,unsigned int 
 {
 	// test if the address is at the beginning of a page
 	if((pageAddr&(pageSize-1))!=0)
-		return -1;
+		return;
 	while(I2C_isSending==1)
 	{
 		RS232_println_debug("EEPROM busy . . .");

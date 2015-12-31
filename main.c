@@ -7,7 +7,6 @@
 
 
 //#include <stdint.h>
-
 #include "main.h"
 #include "button.h"
 #include "hardware.h"
@@ -54,7 +53,8 @@ int main(void)
 	sei();
 	
 	// paramètres du régulateur mixte
-	PID_setParams(0.42,600,100);
+	// PID_setParams(0.84,250,100);
+	PID_setParams(1.2,250.0,10.0);
 
 	// démarrage des callback	
 	CBID_TglLed	= OS_addCallback(statusLedToggle,blinkPeriod);
@@ -75,6 +75,7 @@ int main(void)
 
 // main menu
 // Tested OK
+// affiche l'écran initial
 char st_welcome(char input)
 {
 	static int32_t oldTmp=0;
@@ -97,9 +98,10 @@ char st_welcome(char input)
 
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à modifier la température de palier
 char st_temp_palier(char input)
 {
 	if(OS_first_run==TRUE)
@@ -141,9 +143,10 @@ char st_temp_palier(char input)
 		sei();
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à modifier la température de pic
 char st_temp_pic(char input)
 {
 	if(OS_first_run==TRUE)
@@ -185,9 +188,10 @@ char st_temp_pic(char input)
 		sei();
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à sauver le profil dans l'eeprom
 char st_profiles_save(char input)
 {
 	if(input==KEY_ENTER)
@@ -200,9 +204,10 @@ char st_profiles_save(char input)
 		EEPROM_writePage(data,EEPROM_ADDR,0,16);
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à charger le profil stocké dans l'eeprom
 char st_profiles_load(char input)
 {
 	if(input==KEY_ENTER)
@@ -212,9 +217,10 @@ char st_profiles_load(char input)
 		tempPic=(int)((data[2]<<8)|data[3]);
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 
+// affiche l'écran servant à lancer la régulation du four selon le profil
 char st_run(char input)
 {
 	static BOOL cmd_enabled = FALSE;
@@ -223,21 +229,22 @@ char st_run(char input)
 	{
 		PID_setConsigne(tempPalier);
 		PID_start();
-		CBID_DataLogger=OS_addCallback(dataLogger,1000);
+		//CBID_DataLogger=OS_addCallback(dataLogger,1000);
 		cmd_enabled=TRUE;
 	}
 	else if((cmd_enabled == TRUE)&&(input == KEY_ENTER))
 	{
 		PID_stop();
-		OS_removeCallback(CBID_DataLogger);
+		//OS_removeCallback(CBID_DataLogger);
 		cmd_enabled=FALSE;
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 
 // manual menu
 // Tested OK
+// affiche l'écran servant à lancer une régulation à une tempérture entrée
 char st_manual_temp(char input)
 {
 	static BOOL temp_enabled = FALSE;
@@ -293,9 +300,10 @@ char st_manual_temp(char input)
 		}
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à modifier la température pour la régulation manuelle
 char st_manual_set_temp(char input)
 {
 	if(OS_first_run==TRUE)
@@ -339,9 +347,10 @@ char st_manual_set_temp(char input)
 		sei();
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à effectuer un commande (un step)
 char st_manual_cmd(char input)
 {
 	static BOOL cmd_enabled = FALSE;
@@ -400,9 +409,10 @@ char st_manual_cmd(char input)
 		}
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 // Tested OK
+// affiche l'écran servant à modifier la commande pour le step
 char st_manual_set_cmd(char input)
 {
 	if(OS_first_run==TRUE)
@@ -446,7 +456,7 @@ char st_manual_set_cmd(char input)
 		sei();
 	}
 	
-	return OS_stateMachine(OS_CURRENT_STATE, input);
+	return OS_getNextState(OS_CURRENT_STATE, input);
 }
 
 void dataLogger(void)

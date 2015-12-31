@@ -57,14 +57,17 @@ void OS_start()
 		/*						Gestion des callbacks							*/
 		/************************************************************************/
 		
-		unsigned int j=1;					// Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
-		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++;		// pour trouver le nombre de callback enregistrées
+		// Attention ,on commence à 1 (IDCB = 0 --> callback non enregistrée)
+		unsigned int j=1;
+		// pour trouver le nombre de callback enregistrées
+		while (TIMER_CB_FUNC[j]!=0 && j<TIMER_CB_MAX) j++;
 		
 		unsigned char idx;
   		for (idx = 1; idx < j; idx++)		// pour chaque identificateur de callback
     	{
+			// si on est arrivé au nombre de ms demandé
      		if (TIMER_CB_FUNC[idx] &&
-				TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx])		// si on est arrivé au nombre de ms demandé 
+				TIMER_CB_TICK[idx] >= TIMER_CB_TIME[idx]) 
       		{
 				TIMER_CB_TICK[idx] = 0;
       			TIMER_CB_FUNC[idx]();		// Appel de la fonction enregistrée!					
@@ -92,19 +95,19 @@ void OS_start()
 		// 3 - Appel de la fonction liée à l'état    
 		if (pStateFunc)
 		{
-	  		nextstate = pStateFunc(input);		// la fonction retourne le prochain état
-			OS_first_run=FALSE;					// ce n'est plus la première execution de l'état
+	  		nextstate = pStateFunc(input);	// la fonction retourne le prochain état
+			OS_first_run=FALSE;				// ce n'est plus la première execution de l'état
 		}	
 		else if(input!=KEY_NULL)
 		{
-			nextstate = OS_stateMachine(OS_CURRENT_STATE, input);
+			nextstate = OS_getNextState(OS_CURRENT_STATE, input);
 		}
 		
 		// 4 - Si l'état change...
 		if (nextstate != OS_CURRENT_STATE) 
 		{
-			OS_first_run=TRUE;					// ce sera la première execution de l'état
-			OS_CURRENT_STATE = nextstate;		// l'état est maintenant le nouvel état de la séquence définie dans le menu
+			OS_first_run=TRUE;				// ce sera la première execution de l'état
+			OS_CURRENT_STATE = nextstate;	// l'état est maintenant le nouvel état de la séquence définie dans le menu
 			unsigned char i;
 			for (i=0; (j=pgm_read_byte(&Menu_State[i].state)); i++)
 			{
@@ -118,7 +121,7 @@ void OS_start()
 	}
 }
 
-unsigned char OS_stateMachine(char state, unsigned char stimuli)
+unsigned char OS_getNextState(char state, unsigned char stimuli)
 {
 	// reste dans le meme état par défaut
     unsigned char nextstate = state;
@@ -165,9 +168,9 @@ unsigned char OS_removeCallback(unsigned char CB_ID)
 	return 0;
 }
 
-unsigned char OS_updateCallbackTime(unsigned char CB_ID,unsigned int time)
+void OS_setCallbackPeriod(unsigned char CB_ID,unsigned int period)
 {
-	TIMER_CB_TIME[CB_ID] = time;
+	TIMER_CB_TIME[CB_ID] = period;
 }	
 
 ISR(TIMER2_COMPA_vect)
